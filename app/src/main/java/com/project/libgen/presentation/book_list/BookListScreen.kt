@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,11 +15,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.project.libgen.Screen
 import com.project.libgen.data.model.Book
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
@@ -33,12 +35,12 @@ fun BookListScreen(
 
 @Composable
 private fun ScreenContent(
-    navController: NavController
+    navController: NavController,
+    viewModel: BookListViewModel = hiltViewModel()
 ) {
-    val viewModel = BookListViewModel()
     val scrollState = rememberLazyListState()
     fun onSearchClicked() {
-        CoroutineScope(IO).launch {
+        viewModel.viewModelScope.launch(IO) {
             viewModel.onSearch(viewModel.searchQuery.value)
         }
     }
@@ -56,13 +58,13 @@ private fun ScreenContent(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search,
                 ),
-                keyboardActions = KeyboardActions(
-                    onSearch = { onSearchClicked() }
-                ),
+//                keyboardActions = KeyboardActions(
+//                    onSearch = { viewModel.onSearch(viewModel.searchQuery.value) }
+//                ),
                 label = {
                     Text(text = "Search")
                 },
-                onValueChange = { viewModel.onsearchQueryChange(it) },
+                onValueChange = { viewModel.onSearchQueryChanged(it) },
                 trailingIcon = {
                     IconButton(onClick = {
                         onSearchClicked()
@@ -76,7 +78,7 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 state = scrollState
             ) {
-                items(viewModel.booklist.value) { book ->
+                items(viewModel.bookList.value) { book ->
                     BookItem(navController, book)
                 }
             }
@@ -127,7 +129,9 @@ private fun BookItem(
             ) {
                 Text(
                     text = "by ${book.author}",
-                    modifier = Modifier.padding(start = 5.dp).weight(1f),
+                    modifier = Modifier
+                        .padding(start = 5.dp)
+                        .weight(1f),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
                 )
@@ -138,4 +142,10 @@ private fun BookItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun Card() {
+    BookItem(navController = viewModel(), book = Book())
 }

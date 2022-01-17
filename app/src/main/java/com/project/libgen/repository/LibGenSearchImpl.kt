@@ -5,10 +5,12 @@ import com.project.libgen.data.remote.LibGenSearch
 import org.jsoup.Jsoup
 
 class LibGenSearchImpl : LibGenSearch {
-    override fun getBooks(query: String): MutableList<Book> {
+    override fun getBooks(query: String): List<Book> {
+        println("started scraping...")
         val bookList: MutableList<Book> = mutableListOf()
-        val doc = Jsoup.connect("https://libgen.rs/search.php?req=$query&res=50").get()
+        val doc = Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100").get()
         val rows = doc.select("table.c").select("tr").drop(1)
+        println(bookList.size)
         rows.forEach { item ->
             val id = item.child(0).text()
             val author = item.child(1).select("a").text()
@@ -19,22 +21,22 @@ class LibGenSearchImpl : LibGenSearch {
             val language = item.child(6).text()
             val filesize = item.child(7).text()
             val extension = item.child(8).text()
+            bookList.add(
+                Book(
+                    id = id,
+                    author = author,
+                    title = title,
+                    publisher = publisher,
+                    year = year,
+                    pages = pages,
+                    language = language,
+                    extension = extension,
+                    filesize = filesize
 
-            val book = Book(
-                id = id,
-                author = author,
-                title = title,
-                publisher = publisher,
-                year = year,
-                pages = pages,
-                language = language,
-                extension = extension,
-                filesize = filesize
-
+                )
             )
-            bookList.add(book)
         }
+        println(bookList.size)
         return bookList
     }
-
 }

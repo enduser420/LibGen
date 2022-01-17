@@ -3,36 +3,38 @@ package com.project.libgen.presentation.book_list
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.project.libgen.data.model.Book
 import com.project.libgen.data.remote.LibGenSearch
 import com.project.libgen.repository.LibGenSearchImpl
-import kotlinx.coroutines.launch
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class BookListViewModel : ViewModel() {
-
-    private val LibGenSearch: LibGenSearch = LibGenSearchImpl()
+@HiltViewModel
+class BookListViewModel @Inject constructor(
+    private val LibGenSearch: LibGenSearch
+) : ViewModel() {
     private val _searchQuery: MutableState<String> = mutableStateOf("")
     val searchQuery: MutableState<String> = _searchQuery
 
-    private val _booklist: MutableState<List<Book>> = mutableStateOf(listOf())
-    val booklist: MutableState<List<Book>> = _booklist
+//    private var _booklist = MutableLiveData(listOf<Book>())
+//    private var _booklist: MutableLiveData<MutableList<Book>> = MutableLiveData(mutableListOf())
+//    val booklist: LiveData<List<Book>> = _booklist
+
+    private val _bookList: MutableState<List<Book>> = mutableStateOf(listOf())
+    val bookList: MutableState<List<Book>> = _bookList
 
     init {
 
         searchQuery.value = "algorithm"
-        viewModelScope.launch {
-            onSearch("algorithm")
-        }
+//        onSearch(searchQuery.value)
 
     }
 
-    fun onsearchQueryChange(newsearchQuery: String) {
-        _searchQuery.value = newsearchQuery
+    fun onSearchQueryChanged(newSearchQuery: String) {
+        _searchQuery.value = newSearchQuery
     }
 
-      fun onSearch(searchQuery: String) {
-        booklist.value = LibGenSearch.getBooks(searchQuery)
-
+    fun onSearch(searchQuery: String) {
+        bookList.value = LibGenSearch.getBooks(searchQuery)
     }
 }

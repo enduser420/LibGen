@@ -15,8 +15,8 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
-        val policy = ThreadPolicy.Builder().permitAll().build()
-        StrictMode.setThreadPolicy(policy)
+//        val policy = ThreadPolicy.Builder().permitAll().build()
+//        StrictMode.setThreadPolicy(policy)
         super.onCreate(savedInstanceState)
         setContent {
             LibGenTheme {
