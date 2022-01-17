@@ -13,14 +13,13 @@ import com.project.libgen.BookList.BookListViewModel
 
 @Composable
 fun SetupNavGraph(
-    navController: NavHostController,
-    viewModel: BookListViewModel
+    navController: NavHostController
 ) {
     NavHost(navController = navController, startDestination = Screen.BookList.route ) {
         composable(
             route = Screen.BookList.route
         ) {
-            BookListScreen(navController = navController, viewModel = viewModel)
+            BookListScreen(navController)
         }
         composable(
             route = Screen.BookDetials.route,

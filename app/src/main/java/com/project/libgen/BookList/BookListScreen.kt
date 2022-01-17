@@ -18,6 +18,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.project.libgen.Screen
 import com.project.libgen.data.model.Book
@@ -27,19 +28,18 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BookListScreen(
-    navController: NavController,
-    viewModel: BookListViewModel
+    navController: NavController
 ) {
-    ScreenContent(navController, viewModel)
+    ScreenContent(navController)
 }
 
 @Composable
 private fun ScreenContent(
-    navController: NavController,
-    viewModel: BookListViewModel
+    navController: NavController
 ) {
+    val viewModel = BookListViewModel()
     val scrollState = rememberLazyListState()
-    fun onClick(): Unit {
+    fun onClick() {
         CoroutineScope(IO).launch {
             viewModel.onSearch(viewModel.searchQuery.value)
         }

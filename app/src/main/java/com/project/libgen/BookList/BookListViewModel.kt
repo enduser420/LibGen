@@ -11,10 +11,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class BookListViewModel(
-    private val LibGenSearch: LibGenSearch
-) : ViewModel() {
+class BookListViewModel : ViewModel() {
 
+    private val LibGenSearch: LibGenSearch = LibGenSearchImpl()
     private val _searchQuery: MutableState<String> = mutableStateOf("")
     val searchQuery: MutableState<String> = _searchQuery
 

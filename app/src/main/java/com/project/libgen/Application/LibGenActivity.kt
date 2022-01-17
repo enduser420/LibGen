@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private lateinit var navController: NavHostController
-    private lateinit var viewModel: BookListViewModel
 
     @SuppressLint("CoroutineCreationDuringComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,8 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             LibGenTheme {
                 navController = rememberNavController()
-                viewModel = BookListViewModel(LibGenSearchImpl())
-                SetupNavGraph(navController = navController, viewModel = viewModel)
+                SetupNavGraph(navController = navController)
             }
         }
     }

@@ -2,14 +2,11 @@ package com.project.libgen.repository
 
 import com.project.libgen.data.model.Book
 import com.project.libgen.data.remote.LibGenSearch
-import dagger.Provides
-import dagger.hilt.android.scopes.ServiceScoped
 import org.jsoup.Jsoup
-import javax.inject.Inject
 
 class LibGenSearchImpl : LibGenSearch {
     override fun getBooks(query: String): MutableList<Book> {
-        var bookList: MutableList<Book> = mutableListOf()
+        val bookList: MutableList<Book> = mutableListOf()
         val doc = Jsoup.connect("https://libgen.rs/search.php?req=$query&res=50").get()
         val rows = doc.select("table.c").select("tr").drop(1)
         rows.forEach { item ->
@@ -39,4 +36,5 @@ class LibGenSearchImpl : LibGenSearch {
         }
         return bookList
     }
+
 }
