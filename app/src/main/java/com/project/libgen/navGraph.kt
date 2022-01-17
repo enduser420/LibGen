@@ -6,8 +6,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.project.libgen.BookDetails.BookDetailsScreen
-import com.project.libgen.BookList.BookListScreen
+import com.project.libgen.presentation.book_details.BookDetailsScreen
+import com.project.libgen.presentation.book_list.BookListScreen
 
 @Composable
 fun SetupNavGraph(

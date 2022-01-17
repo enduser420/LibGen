@@ -1,4 +1,4 @@
-package com.project.libgen.BookDetails
+package com.project.libgen.presentation.book_details
 
 import javax.inject.Inject
 

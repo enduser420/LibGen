@@ -1,4 +1,4 @@
-package com.project.libgen.BookList
+package com.project.libgen.presentation.book_list
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
