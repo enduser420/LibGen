@@ -8,7 +8,6 @@ import dagger.hilt.android.scopes.ServiceScoped
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 interface LibGenSearch {
     fun getBooks(query: String): MutableList<Book>
 }

@@ -12,13 +12,11 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.project.libgen.Screen
 import com.project.libgen.data.model.Book
@@ -39,7 +37,7 @@ private fun ScreenContent(
 ) {
     val viewModel = BookListViewModel()
     val scrollState = rememberLazyListState()
-    fun onClick() {
+    fun onSearchClicked() {
         CoroutineScope(IO).launch {
             viewModel.onSearch(viewModel.searchQuery.value)
         }
@@ -48,7 +46,7 @@ private fun ScreenContent(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Column() {
+        Column {
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -59,7 +57,7 @@ private fun ScreenContent(
                     imeAction = ImeAction.Search,
                 ),
                 keyboardActions = KeyboardActions(
-                    onSearch = { onClick() }
+                    onSearch = { onSearchClicked() }
                 ),
                 label = {
                     Text(text = "Search")
@@ -67,7 +65,7 @@ private fun ScreenContent(
                 onValueChange = { viewModel.onsearchQueryChange(it) },
                 trailingIcon = {
                     IconButton(onClick = {
-                        onClick()
+                        onSearchClicked()
                     }) {
                         Icon(Icons.Filled.Search, contentDescription = null)
                     }
@@ -79,7 +77,7 @@ private fun ScreenContent(
                 state = scrollState
             ) {
                 items(viewModel.booklist.value) { book ->
-                    BookItem(book = book, navController = navController)
+                    BookItem(navController, book)
                 }
             }
         }
@@ -89,12 +87,15 @@ private fun ScreenContent(
 @Composable
 private fun BookItem(
     navController: NavController,
-    book: Book
+    Book: Book
 ) {
+    fun onBookClicked() {
+        navController.navigate(route = Screen.BookDetials.passId(Book.id))
+    }
     Card(
-        modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min),
-//        onClick = { onBookLCicked(book) }) {
-        onClick = { navController.navigate(route = Screen.BookDetials.passId(book.id)) }) {
+        modifier = Modifier
+            .fillMaxWidth(),
+        onClick = { onBookClicked() }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -106,13 +107,13 @@ private fun BookItem(
                     .padding(bottom = 5.dp)
             ) {
                 Text(
-                    text = book.id,
+                    text = Book.id,
                     modifier = Modifier.padding(end = 5.dp),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.title,
+                    text = Book.title,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.body1,
                     maxLines = 2,
@@ -120,17 +121,19 @@ private fun BookItem(
                 )
             }
             Row(
-                horizontalArrangement = Arrangement.SpaceBetween
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "by ${book.author}",
-                    modifier = Modifier.padding(start = 5.dp),
+                    text = "by ${Book.author}",
+                    modifier = Modifier.padding(start = 5.dp).weight(1f),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
                 )
-                Row() {
-                    Text(text = "Pages: ${book.pages}", modifier = Modifier.padding(end = 5.dp))
-                    Text(text = book.extension)
+                Row {
+                    Text(text = "Pages: ${Book.pages}", modifier = Modifier.padding(end = 5.dp))
+                    Text(text = Book.extension)
                 }
             }
         }
