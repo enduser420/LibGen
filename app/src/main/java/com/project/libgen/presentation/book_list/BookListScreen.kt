@@ -87,10 +87,10 @@ private fun ScreenContent(
 @Composable
 private fun BookItem(
     navController: NavController,
-    Book: Book
+    book: Book
 ) {
     fun onBookClicked() {
-        navController.navigate(route = Screen.BookDetials.passId(Book.id))
+        navController.navigate(route = Screen.BookDetials.passId(book.id))
     }
     Card(
         modifier = Modifier
@@ -107,13 +107,13 @@ private fun BookItem(
                     .padding(bottom = 5.dp)
             ) {
                 Text(
-                    text = Book.id,
+                    text = book.id,
                     modifier = Modifier.padding(end = 5.dp),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = Book.title,
+                    text = book.title,
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.body1,
                     maxLines = 2,
@@ -126,14 +126,14 @@ private fun BookItem(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "by ${Book.author}",
+                    text = "by ${book.author}",
                     modifier = Modifier.padding(start = 5.dp).weight(1f),
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 2
                 )
                 Row {
-                    Text(text = "Pages: ${Book.pages}", modifier = Modifier.padding(end = 5.dp))
-                    Text(text = Book.extension)
+                    Text(text = "Pages: ${book.pages}", modifier = Modifier.padding(end = 5.dp))
+                    Text(text = book.extension)
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.project.libgen.Application
+package com.project.libgen.application
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

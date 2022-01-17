@@ -1,4 +1,4 @@
-package com.project.libgen.Application
+package com.project.libgen.application
 
 import android.os.Bundle
 import android.os.StrictMode
