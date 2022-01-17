@@ -34,7 +34,7 @@ class BookListViewModel(
         _searchQuery.value = newsearchQuery
     }
 
-    suspend fun onSearch(searchQuery: String) {
+      fun onSearch(searchQuery: String) {
         booklist.value = LibGenSearch.getBooks(searchQuery)
 
     }
