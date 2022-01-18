@@ -10,7 +10,6 @@ class LibGenSearchImpl : LibGenSearch {
         val bookList: MutableList<Book> = mutableListOf()
         val doc = Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100").get()
         val rows = doc.select("table.c").select("tr").drop(1)
-        println(bookList.size)
         rows.forEach { item ->
             val id = item.child(0).text()
             val author = item.child(1).select("a").text()
