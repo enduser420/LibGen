@@ -7,15 +7,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.project.libgen.data.model.Book
-import com.project.libgen.data.remote.BookDto
-import com.project.libgen.data.remote.LibGenApi
 import com.project.libgen.data.remote.toBook
-import com.project.libgen.di.LibGenApiModule
 import com.project.libgen.repository.LibGenBookRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
