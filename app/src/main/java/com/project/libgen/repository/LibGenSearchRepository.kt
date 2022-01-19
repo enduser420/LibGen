@@ -1,7 +1,7 @@
-package com.project.libgen.data.remote
+package com.project.libgen.repository
 
 import com.project.libgen.data.model.Book
 
-interface LibGenSearch {
+interface LibGenSearchRepository {
     fun getBooks(query: String): List<Book>
 }

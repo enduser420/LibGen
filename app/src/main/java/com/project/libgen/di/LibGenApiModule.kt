@@ -1,10 +1,9 @@
 package com.project.libgen.di
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.project.libgen.data.model.Book
 import com.project.libgen.data.remote.BookDto
-import com.project.libgen.data.util.Mapper
+import com.project.libgen.data.remote.LibGenApi
+import com.project.libgen.repository.LibGenBookRepository
+import com.project.libgen.repository.LibGenBookRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,23 +19,27 @@ class LibGenApiModule {
 
     @Singleton
     @Provides
-    fun provideGsonBuilder(): Gson {
-        return GsonBuilder().create()
-    }
-
-    @Singleton
-    @Provides
-    fun provideRetrofit(gson: Gson): Retrofit.Builder {
-        return Retrofit.Builder()
-            .baseUrl("https://libgen.rs/")
-            .addConverterFactory(GsonConverterFactory.create(gson))
-    }
-
-    @Singleton
-    @Provides
     fun provideBookDetails(retrofit: Retrofit.Builder): BookDto {
         return retrofit
             .build()
             .create(BookDto::class.java)
     }
+
+
+    @Provides
+    @Singleton
+    fun provideLibGenApi(): LibGenApi {
+        return Retrofit.Builder()
+            .baseUrl("https://libgen.rs/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(LibGenApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLibGenBookRepository(api: LibGenApi): LibGenBookRepository {
+        return LibGenBookRepositoryImpl(api)
+    }
+
 }
