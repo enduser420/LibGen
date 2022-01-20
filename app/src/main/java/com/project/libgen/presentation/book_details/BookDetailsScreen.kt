@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.project.libgen.R
 
@@ -21,9 +22,10 @@ fun BookDetailsScreen() {
 private fun ScreenContent(
     viewModel : BookDetailsViewModel = hiltViewModel()
 ) {
-    println(viewModel.state.value)
+    println(viewModel.bookState.value)
     Scaffold {
         Column(modifier = Modifier.fillMaxSize()) {
+            
         }
     }
 }

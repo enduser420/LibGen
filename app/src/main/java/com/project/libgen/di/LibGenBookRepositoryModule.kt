@@ -17,15 +17,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class LibGenBookRepositoryModule {
 
-    @Singleton
-    @Provides
-    fun provideBookDetails(retrofit: Retrofit.Builder): BookDto {
-        return retrofit
-            .build()
-            .create(BookDto::class.java)
-    }
-
-
     @Provides
     @Singleton
     fun provideLibGenApi(): LibGenApi {

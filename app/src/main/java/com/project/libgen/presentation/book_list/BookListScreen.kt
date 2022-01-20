@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -58,12 +59,13 @@ private fun ScreenContent(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search,
                 ),
-//                keyboardActions = KeyboardActions(
-//                    onSearch = { viewModel.onSearch(viewModel.searchQuery.value) }
-//                ),
+                keyboardActions = KeyboardActions(
+                    onSearch = { onSearchClicked() }
+                ),
                 label = {
                     Text(text = "Search")
                 },
+                singleLine = true,
                 onValueChange = { viewModel.onSearchQueryChanged(it) },
                 trailingIcon = {
                     IconButton(onClick = {
@@ -92,7 +94,7 @@ private fun BookItem(
     book: Book
 ) {
     fun onBookClicked() {
-        navController.navigate(route = Screen.BookDetials.passId(book.id))
+        navController.navigate(route = Screen.BookDetails.passId(book.id ?: "0"))
     }
     Card(
         modifier = Modifier
@@ -109,13 +111,13 @@ private fun BookItem(
                     .padding(bottom = 5.dp)
             ) {
                 Text(
-                    text = book.id,
+                    text = book.id ?: "n/a",
                     modifier = Modifier.padding(end = 5.dp),
                     style = MaterialTheme.typography.body2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.title,
+                    text = book.title ?: "n/a",
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.body1,
                     maxLines = 2,
@@ -137,7 +139,7 @@ private fun BookItem(
                 )
                 Row {
                     Text(text = "Pages: ${book.pages}", modifier = Modifier.padding(end = 5.dp))
-                    Text(text = book.extension)
+                    Text(text = book.extension ?: "n/a")
                 }
             }
         }
@@ -147,5 +149,5 @@ private fun BookItem(
 @Preview
 @Composable
 fun Card() {
-    BookItem(navController = viewModel(), book = Book())
+    BookItem(navController = viewModel(), book = Book("45"))
 }

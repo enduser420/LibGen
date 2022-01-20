@@ -7,7 +7,8 @@ import javax.inject.Inject
 class LibGenBookRepositoryImpl @Inject constructor(
     private val api: LibGenApi
 ) : LibGenBookRepository {
-    override suspend fun getBookDetails(_id: String): BookDto {
-        return api.getBookDetails(_id)
+    override suspend fun getBookDetails(bookId: String): BookDto {
+        // here we get the first element, since we get a list from the API
+        return api.getBookDetails(bookId)[0]
     }
 }

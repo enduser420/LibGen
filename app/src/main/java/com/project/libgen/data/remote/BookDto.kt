@@ -1,44 +1,45 @@
 package com.project.libgen.data.remote
 
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.project.libgen.data.model.Book
 
 data class BookDto(
     @SerializedName("id")
-    var id: String,
+    var id: String?,
     @SerializedName("author")
-    var author: String,
+    var author: String?,
     @SerializedName("title")
-    var title: String,
+    var title: String?,
     @SerializedName("torrent")
-    var torrent: String,
+    var torrent: String?,
     @SerializedName("publisher")
-    var publisher: String,
+    var publisher: String?,
     @SerializedName("year")
-    var year: String,
+    var year: String?,
     @SerializedName("extension")
-    var extension: String,
+    var extension: String?,
     @SerializedName("descr")
-    var descr: String,
+    var descr: String?,
     @SerializedName("coverurl")
-    var coverurl: String,
+    var coverurl: String?,
     @SerializedName("issn")
-    var issn: String,
+    var issn: String?,
     @SerializedName("series")
-    var series: String,
+    var series: String?,
     @SerializedName("volumeinfo")
-    var volumeinfo: String,
+    var volumeinfo: String?,
     @SerializedName("city")
-    var city: String,
+    var city: String?,
     @SerializedName("edition")
-    var edition: String,
+    var edition: String?,
     @SerializedName("pages")
-    var pages: String,
+    var pages: String?,
     @SerializedName("language")
-    var language: String,
+    var language: String?,
     @SerializedName("filesize")
-    var filesize: String
+    var filesize: String?
 )
 
 fun BookDto.toBook() : Book {

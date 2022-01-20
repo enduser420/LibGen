@@ -20,12 +20,12 @@ fun SetupNavGraph(
             BookListScreen(navController)
         }
         composable(
-            route = Screen.BookDetials.route,
+            route = Screen.BookDetails.route,
             arguments = listOf(navArgument("id") {
                 type = NavType.StringType
             })
         ) {
-            println(it.arguments?.getString("id"))
+//            println(it.arguments?.getString("id"))
             BookDetailsScreen()
         }
     }
