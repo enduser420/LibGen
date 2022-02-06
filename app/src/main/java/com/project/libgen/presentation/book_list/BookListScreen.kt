@@ -50,9 +50,9 @@ private fun ScreenContent(
         }
     }
 
-    fun onFilterClicked() {
-        viewModel.filterVisible.value = !viewModel.filterVisible.value
-    }
+//    fun onFilterClicked() {
+//        viewModel.filterVisible.value = !viewModel.filterVisible.value
+//    }
 
     Scaffold(
         scaffoldState = scaffoldState,
