@@ -13,20 +13,28 @@ import javax.inject.Inject
 class BookListViewModel @Inject constructor(
     private val LibGenSearch: LibGenSearchRepository
 ) : ViewModel() {
-    private val _searchQuery: MutableState<String> = mutableStateOf("")
-    val searchQuery: State<String> = _searchQuery
+    private val _searchQuery = mutableStateOf("")
+    val searchQuery = _searchQuery
 
 //    private var bookList = MutableLiveData(listOf<Book>())
 //    private var _bookList: MutableLiveData<MutableList<Book>> = MutableLiveData(mutableListOf())
 //    val bookList: LiveData<List<Book>> = _bookList
 
-    private val _bookList: MutableState<List<Book>> = mutableStateOf(listOf())
-    val bookList: State<List<Book>> = _bookList
+    private val _bookList = mutableStateOf(listOf<Book>())
+    val bookList = _bookList
+
+    private val _filterVisible = mutableStateOf(false)
+    val filterVisible = _filterVisible
+
+//    val filterOptions = listOf<String>("Title", "Author(s)", "Series", "Publisher", "Year", "ISBN", "Language", "MD5", "Tags", "Extension")
+    val filterText = listOf("Title", "Author(s)", "Series", "Publisher", "Year", "Language", "Tags", "Extension")
+    val filterOptions = listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")
+    val filterIndex = mutableStateOf(0)
+//    private val _filterSelected = mutableStateOf(filterText[0])
+//    val filterSelected = _filterSelected
 
     init {
-
         _searchQuery.value = "algorithm"
-//        onSearch(_searchQuery.value)
     }
 
 
@@ -34,8 +42,8 @@ class BookListViewModel @Inject constructor(
         _searchQuery.value = newSearchQuery
     }
 
-    fun onSearch(searchQuery: String) {
-        _bookList.value = LibGenSearch.getBooks(searchQuery)
+    fun onSearch(searchQuery: String, filterOption: String) {
+        _bookList.value = LibGenSearch.getBooks(searchQuery, filterOption)
     }
 
 }

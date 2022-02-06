@@ -44,21 +44,21 @@ data class BookDto(
 
 fun BookDto.toBook() : Book {
     return Book(
-        id = id,
-        author = author,
-        title = title,
-        pages = pages,
-        coverurl = coverurl,
-        extension = extension,
-        publisher = publisher,
-        year = year,
-        descr = descr,
-        issn = issn,
-        volumeinfo = volumeinfo,
-        torrent = torrent,
-        city = city,
-        edition = edition,
-        language = language,
-        filesize = filesize
+        id = id ?: "",
+        author = author ?: "",
+        title = title ?: "",
+        pages = pages ?: "",
+        coverurl = "https://library.lol/covers/$coverurl",
+        extension = extension ?: "",
+        publisher = publisher ?: "",
+        year = year ?: "",
+        descr = descr ?: "",
+        issn = issn ?: "",
+        volumeinfo = volumeinfo ?: "",
+        torrent = torrent ?: "",
+        city = city ?: "",
+        edition = edition ?: "",
+        language = language ?: "",
+        filesize = filesize ?: "",
     )
 }

@@ -3,25 +3,26 @@ package com.project.libgen.presentation.book_details
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
+import com.project.libgen.core.util.Resource
 import com.project.libgen.data.model.Book
 import com.project.libgen.data.remote.toBook
 import com.project.libgen.repository.LibGenBookRepository
+import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
+    private val getBookDetailsUseCase: GetBookDetailsUseCase,
     private val LibGenBookRepository: LibGenBookRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _bookState: MutableState<Book> = mutableStateOf(Book())
-    val bookState: State<Book> = _bookState
+    private val _bookState = mutableStateOf(Book())
+    val bookState = _bookState
 
 
     init {
@@ -36,4 +37,23 @@ class BookDetailsViewModel @Inject constructor(
             _bookState.value = LibGenBookRepository.getBookDetails(bookId).toBook()
         }
     }
+
+//    private fun getBookDetails(bookId: String) {
+//        getBookDetailsUseCase(bookId).onEach { result ->
+//            when (result) {
+//                is Resource.Success -> {
+//                    _bookState.value = BookDetailsState(book = result.data)
+//                }
+//                is Resource.Error -> {
+//                    _bookState.value = BookDetailsState(
+//                        error = result.message ?: "An unexpected error occurred"
+//                    )
+//                }
+//                is Resource.Loading -> {
+//                    _bookState.value = BookDetailsState(isLoading = true)
+//                }
+//
+//            }
+//        }
+//    }
 }

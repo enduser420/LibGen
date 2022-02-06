@@ -4,10 +4,10 @@ import com.project.libgen.data.model.Book
 import org.jsoup.Jsoup
 
 class LibGenSearchRepositoryImpl : LibGenSearchRepository {
-    override fun getBooks(query: String): List<Book> {
+    override fun getBooks(query: String, filter: String): List<Book> {
         println("started scraping...")
-        val bookList: MutableList<Book> = mutableListOf()
-        val doc = Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100").get()
+        val bookList = mutableListOf<Book>()
+        val doc = Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100&column=$filter").get()
         val rows = doc.select("table.c").select("tr").drop(1)
         rows.forEach { item ->
             val id = item.child(0).text()
@@ -29,12 +29,17 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
                     pages = pages,
                     language = language,
                     extension = extension,
-                    filesize = filesize
-
+                    filesize = filesize,
+                    issn = "",
+                    coverurl = "",
+                    descr = "",
+                    volumeinfo = "",
+                    torrent = "",
+                    city = "",
+                    edition = ""
                 )
             )
         }
-        println(bookList.size)
         return bookList
     }
 }
