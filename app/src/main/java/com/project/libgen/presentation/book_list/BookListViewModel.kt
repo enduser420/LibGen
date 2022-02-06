@@ -28,11 +28,8 @@ class BookListViewModel @Inject constructor(
 
 //    val filterOptions = listOf<String>("Title", "Author(s)", "Series", "Publisher", "Year", "ISBN", "Language", "MD5", "Tags", "Extension")
 
-    // The DropdownMenu shows the strings from this list
     val filterText = listOf("Title", "Author(s)", "Series", "Publisher", "Year", "Language", "Tags", "Extension")
-    // but the api needs strings from this list
     val filterOptions = listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")
-    // i wrote these lists with the strings in the same positions and im getting the index from the first list and passing the api the string from the second list
     val filterIndex = mutableStateOf(0)
 
     init {
