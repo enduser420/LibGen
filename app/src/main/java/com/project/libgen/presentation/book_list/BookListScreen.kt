@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,19 +41,15 @@ private fun ScreenContent(
     navController: NavController,
     viewModel: BookListViewModel = hiltViewModel()
 ) {
+    val state = viewModel.bookList.value
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberLazyListState()
 
     fun onSearchClicked() {
-        println(viewModel.filterOptions[viewModel.filterIndex.value])
         viewModel.viewModelScope.launch(IO) {
-            viewModel.onSearch(viewModel.searchQuery.value, viewModel.filterOptions[viewModel.filterIndex.value])
+            viewModel.onSearch()
         }
     }
-
-//    fun onFilterClicked() {
-//        viewModel.filterVisible.value = !viewModel.filterVisible.value
-//    }
 
     Scaffold(
         scaffoldState = scaffoldState,
@@ -105,11 +102,26 @@ private fun ScreenContent(
                 verticalArrangement = Arrangement.spacedBy(5.dp),
                 state = scrollState
             ) {
-                items(viewModel.bookList.value) { book ->
+                items(state) { book ->
                     BookItem(navController, book)
                 }
             }
         }
+//        if (state.error.isNotBlank()) {
+//            Text(
+//                text = state.error,
+//                color = MaterialTheme.colors.error,
+//                textAlign = TextAlign.Center,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(horizontal = 20.dp)
+//            )
+//        }
+//        if (state.isLoading) {
+//            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                CircularProgressIndicator()
+//            }
+//        }
     }
 }
 

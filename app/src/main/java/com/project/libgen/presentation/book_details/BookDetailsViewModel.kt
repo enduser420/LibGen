@@ -1,18 +1,13 @@
 package com.project.libgen.presentation.book_details
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.project.libgen.core.util.Resource
-import com.project.libgen.data.model.Book
-import com.project.libgen.data.remote.toBook
-import com.project.libgen.repository.LibGenBookRepository
 import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
