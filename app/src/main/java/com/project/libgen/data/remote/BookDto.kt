@@ -48,7 +48,7 @@ fun BookDto.toBook() : Book {
         author = author ?: "",
         title = title ?: "",
         pages = pages ?: "",
-        coverurl = "https://library.lol/covers/$coverurl",
+        coverurl = coverurl ?: "",
         extension = extension ?: "",
         publisher = publisher ?: "",
         year = year ?: "",

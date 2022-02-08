@@ -10,6 +10,7 @@ import com.project.libgen.data.remote.toBook
 import com.project.libgen.repository.LibGenBookRepository
 import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,13 +18,11 @@ import javax.inject.Inject
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
     private val getBookDetailsUseCase: GetBookDetailsUseCase,
-    private val LibGenBookRepository: LibGenBookRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _bookState = mutableStateOf(Book())
-    val bookState = _bookState
-
+    private val _bookState = mutableStateOf(BookDetailsState())
+    val bookState: State<BookDetailsState> = _bookState
 
     init {
         savedStateHandle.get<String>("id")?.let { bookId ->
@@ -31,29 +30,21 @@ class BookDetailsViewModel @Inject constructor(
         }
     }
 
-
     private fun getBookDetails(bookId: String) {
-        viewModelScope.launch {
-            _bookState.value = LibGenBookRepository.getBookDetails(bookId).toBook()
-        }
+        getBookDetailsUseCase(bookId).onEach { result ->
+            when (result) {
+                is Resource.Success -> {
+                    _bookState.value = BookDetailsState(book = result.data)
+                }
+                is Resource.Error -> {
+                    _bookState.value = BookDetailsState(
+                        error = result.message ?: "An unexpected error occurred"
+                    )
+                }
+                is Resource.Loading -> {
+                    _bookState.value = BookDetailsState(isLoading = true)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
-
-//    private fun getBookDetails(bookId: String) {
-//        getBookDetailsUseCase(bookId).onEach { result ->
-//            when (result) {
-//                is Resource.Success -> {
-//                    _bookState.value = BookDetailsState(book = result.data)
-//                }
-//                is Resource.Error -> {
-//                    _bookState.value = BookDetailsState(
-//                        error = result.message ?: "An unexpected error occurred"
-//                    )
-//                }
-//                is Resource.Loading -> {
-//                    _bookState.value = BookDetailsState(isLoading = true)
-//                }
-//
-//            }
-//        }
-//    }
 }

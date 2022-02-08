@@ -17,11 +17,11 @@ class GetBookDetailsUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val bookDetails = LibGenBookRepository.getBookDetails(bookId).toBook()
-            emit(Resource.Success(bookDetails))
+            emit(Resource.Success<Book>(bookDetails))
         } catch (e: HttpException) {
-            emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            emit(Resource.Error<Book>(e.localizedMessage ?: "An unexpected error occurred"))
         } catch (e: IOException) {
-            emit(Resource.Error("Couldn't reach server. Check your internet connection."))
+            emit(Resource.Error<Book>("Couldn't reach server. Check your internet connection."))
         }
     }
 }
