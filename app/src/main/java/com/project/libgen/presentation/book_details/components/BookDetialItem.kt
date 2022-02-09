@@ -17,7 +17,7 @@ import com.project.libgen.R
 import com.project.libgen.data.model.Book
 
 @Composable
-fun BookDetialItem(
+fun BookDetailItem(
     book: Book
 ) {
     /* https://library.lol/covers/0/690ff9f017c663a7068803ea1705d091.jpg */

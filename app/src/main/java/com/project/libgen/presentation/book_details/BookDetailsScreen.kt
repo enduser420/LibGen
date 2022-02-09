@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
-import com.project.libgen.presentation.book_details.components.BookDetialItem
+import com.project.libgen.presentation.book_details.components.BookDetailItem
 import com.project.libgen.presentation.components.util.SnackbarController
 import kotlinx.coroutines.launch
 
@@ -53,7 +53,7 @@ private fun ScreenContent(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     item {
-                        BookDetialItem(it)
+                        BookDetailItem(it)
                     }
                 }
             }
