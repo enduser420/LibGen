@@ -18,8 +18,10 @@ class GetBookListUseCase @Inject constructor(
                 emit(Resource.Loading())
                 val bookList = LibGenSearch.getBooks(searchQuery, filterOption)
                 emit(Resource.Success(bookList))
-            } catch (e: Exception) {
+            } catch (e: HttpException) {
                 emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+            } catch (e: IOException) {
+                emit(Resource.Error("Couldn't reach server. Check your internet connection."))
             }
         }
 }

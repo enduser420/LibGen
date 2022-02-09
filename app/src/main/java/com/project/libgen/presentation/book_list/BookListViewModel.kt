@@ -1,6 +1,5 @@
 package com.project.libgen.presentation.book_list
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,8 +9,11 @@ import com.project.libgen.data.model.Book
 import com.project.libgen.repository.LibGenSearchRepository
 import com.project.libgen.use_case.get_book_list.GetBookListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,18 +29,17 @@ class BookListViewModel @Inject constructor(
 //    private var _bookList: MutableLiveData<MutableList<Book>> = MutableLiveData(mutableListOf())
 //    val bookList: LiveData<List<Book>> = _bookList
 
-//    private val _bookList = mutableStateOf(BookListState())
-//    val bookList: State<BookListState> = _bookList
-    private val _bookList = mutableStateOf(listOf<Book>())
-    val bookList = _bookList
-
-    private val _filterVisible = mutableStateOf(false)
-    val filterVisible = _filterVisible
+    private val _bookList = mutableStateOf(BookListState())
+    val bookList: State<BookListState> = _bookList
+//    private val _bookList = mutableStateOf(listOf<Book>())
+//    val bookList = _bookList
 
 //    val filterOptions = listOf<String>("Title", "Author(s)", "Series", "Publisher", "Year", "ISBN", "Language", "MD5", "Tags", "Extension")
 
-    val filterText = listOf("Title", "Author(s)", "Series", "Publisher", "Year", "Language", "Tags", "Extension")
-    private val filterOptions = listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")
+    val filterText =
+        listOf("Title", "Author(s)", "Series", "Publisher", "Year", "Language", "Tags", "Extension")
+    private val filterOptions =
+        listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")
     val filterIndex = mutableStateOf(0)
 
     init {
@@ -49,27 +50,35 @@ class BookListViewModel @Inject constructor(
         _searchQuery.value = newSearchQuery
     }
 
-//    fun getBookList(searchQuery: String = _searchQuery.value, filterOption: String = filterOptions[filterIndex.value]) {
-//        getBookListUseCase(searchQuery, filterOption).onEach { result ->
-//            when (result) {
-//                is Resource.Success -> {
-//                    println("success")
-////                    _bookList.value = bookList.value.copy(bookList = result.data ?: listOf(Book(), Book()))
-//                    _bookList.value = BookListState(bookList = result.data ?: emptyList())
-//                }
-//                is Resource.Error -> {
-//                    _bookList.value = BookListState(
-//                        error = result.message ?: "An unexpected error occurred"
-//                    )
-//                }
-//                is Resource.Loading -> {
-//                    _bookList.value = BookListState(isLoading = true)
-//                }
-//            }
-//        }.launchIn(viewModelScope)
-//    }
-
     fun onSearch(searchQuery: String = _searchQuery.value, filterOption: String = filterOptions[filterIndex.value]) {
-        _bookList.value = LibGenSearch.getBooks(searchQuery, filterOption)
+            getBookListUseCase(searchQuery, filterOption).onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        println("success")
+//                    _bookList.value = bookList.value.copy(bookList = result.data ?: listOf(Book(), Book()))
+                        _bookList.value = BookListState(bookList = result.data ?: emptyList())
+                    }
+                    is Resource.Error -> {
+                        println("error")
+                        _bookList.value = BookListState(
+                            error = result.message ?: "An unexpected error occurred"
+                        )
+                    }
+                    is Resource.Loading -> {
+                        println("loading")
+                        _bookList.value = BookListState(isLoading = true)
+                    }
+                }
+            }.launchIn(CoroutineScope(IO))
+//            }.launchIn(viewModelScope)
     }
+
+//    fun onSearch(
+//        searchQuery: String = _searchQuery.value,
+//        filterOption: String = filterOptions[filterIndex.value]
+//    ) {
+//        viewModelScope.launch(IO) {
+//            _bookList.value = LibGenSearch.getBooks(searchQuery, filterOption)
+//        }
+//    }
 }
