@@ -4,12 +4,11 @@ import com.project.libgen.data.model.Book
 import org.jsoup.Jsoup
 
 class LibGenSearchRepositoryImpl : LibGenSearchRepository {
-    override fun getBooks(query: String, filter: String): List<Book> {
+    override suspend fun getBooks(query: String, filter: String): List<Book> {
         println("started scraping...")
         val bookList = mutableListOf<Book>()
         val doc =
-            Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100&column=$filter")
-                .get()
+            Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100&column=$filter").get()
         val rows = doc.select("table.c").select("tr").drop(1)
         rows.forEach { item ->
             val id = item.child(0).text()
