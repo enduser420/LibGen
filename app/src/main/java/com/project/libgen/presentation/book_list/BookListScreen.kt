@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -83,13 +82,6 @@ private fun ScreenContent(
                     )
                     FilterSection(viewModel)
                 }
-//            AnimatedVisibility(
-//                visible = viewModel.filterVisible.value, enter = fadeIn() + slideInVertically(),
-//                exit = fadeOut() + slideOutVertically()
-//            ) {
-//                FilterSection()
-//            }
-
                 LazyColumn(
                     contentPadding = PaddingValues(5.dp),
                     verticalArrangement = Arrangement.spacedBy(5.dp),
@@ -101,14 +93,6 @@ private fun ScreenContent(
                 }
             }
             if (state.error.isNotBlank()) {
-//                Text(
-//                    text = state.error,
-//                    color = MaterialTheme.colors.error,
-//                    textAlign = TextAlign.Center,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(horizontal = 20.dp)
-//                )
                 snackbarController.getScope().launch {
                     snackbarController.showSnackbar(
                         scaffoldState = scaffoldState,
