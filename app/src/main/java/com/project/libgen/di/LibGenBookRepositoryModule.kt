@@ -10,6 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 
@@ -32,5 +33,4 @@ class LibGenBookRepositoryModule {
     fun provideLibGenBookRepository(api: LibGenApi): LibGenBookRepository {
         return LibGenBookRepositoryImpl(api)
     }
-
 }

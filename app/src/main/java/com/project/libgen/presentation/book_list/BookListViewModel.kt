@@ -29,12 +29,14 @@ class BookListViewModel @Inject constructor(
         listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")
     val filterIndex = mutableStateOf(0)
 
-    init {
-        _searchQuery.value = "algorithm"
-    }
-
     fun onSearchQueryChanged(newSearchQuery: String) {
         _searchQuery.value = newSearchQuery
+    }
+
+    val searched = mutableStateOf(false)
+
+    init {
+        _searchQuery.value = "algorithm"
     }
 
     fun onSearch(
@@ -44,21 +46,19 @@ class BookListViewModel @Inject constructor(
         getBookListUseCase(searchQuery, filterOption).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    println("success")
-//                    _bookList.value = bookList.value.copy(bookList = result.data ?: listOf(Book(), Book()))
+                    searched.value = true
                     _bookList.value = BookListState(bookList = result.data ?: emptyList())
                 }
                 is Resource.Error -> {
-                    println("error")
                     _bookList.value = BookListState(
                         error = result.message ?: "An unexpected error occurred"
                     )
                 }
                 is Resource.Loading -> {
-                    println("loading")
                     _bookList.value = BookListState(isLoading = true)
                 }
             }
-        }.launchIn(CoroutineScope(IO)) // Don't use .launchIn(viewModelScope)
+        }
+            .launchIn(CoroutineScope(IO)) // NOTE: Don't use .launchIn(viewModelScope), since this function is not called from the init{} block but from the BookList Screen
     }
 }

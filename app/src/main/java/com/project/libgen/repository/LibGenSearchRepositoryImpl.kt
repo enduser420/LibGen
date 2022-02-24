@@ -5,7 +5,6 @@ import org.jsoup.Jsoup
 
 class LibGenSearchRepositoryImpl : LibGenSearchRepository {
     override suspend fun getBooks(query: String, filter: String): List<Book> {
-        println("started scraping...")
         val bookList = mutableListOf<Book>()
         val doc =
             Jsoup.connect("https://libgen.rs/search.php?req=$query&res=100&column=$filter").get()
@@ -20,25 +19,27 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
             val language = item.child(6).text()
             val filesize = item.child(7).text()
             val extension = item.child(8).text()
+            val downloadlink = item.child(9).select("a").attr("href")
             bookList.add(
                 Book(
                     id = id,
-                    author = author,
-                    title = title,
-                    publisher = publisher,
-                    year = year,
-                    pages = pages,
-                    language = language,
-                    extension = extension,
-                    filesize = filesize,
+                    author = author ?: null,
+                    title = title ?: null,
+                    publisher = publisher ?: null,
+                    year = year ?: null,
+                    pages = pages ?: null,
+                    language = language ?: null,
+                    extension = extension ?: null,
+                    filesize = filesize ?: null,
+                    downloadlink = downloadlink ?: null,
                     issn = "",
                     series = "",
-                    coverurl = "",
-                    descr = "",
-                    volumeinfo = "",
-                    torrent = "",
-                    city = "",
-                    edition = ""
+                    coverurl = null,
+                    descr = null,
+                    volumeinfo = null,
+                    torrent = null,
+                    city = null,
+                    edition = null
                 )
             )
         }

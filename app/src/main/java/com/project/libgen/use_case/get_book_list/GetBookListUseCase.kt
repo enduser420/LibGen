@@ -4,6 +4,7 @@ import com.project.libgen.core.util.Resource
 import com.project.libgen.data.model.Book
 import com.project.libgen.repository.LibGenSearchRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
@@ -13,15 +14,15 @@ class GetBookListUseCase @Inject constructor(
     private val LibGenSearch: LibGenSearchRepository
 ) {
     operator fun invoke(searchQuery: String, filterOption: String): Flow<Resource<List<Book>>> =
-        flow {
+        channelFlow {
             try {
-                emit(Resource.Loading())
+                send(Resource.Loading())
                 val bookList = LibGenSearch.getBooks(searchQuery, filterOption)
-                emit(Resource.Success(bookList))
+                send(Resource.Success(bookList))
             } catch (e: HttpException) {
-                emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
+                send(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
             } catch (e: IOException) {
-                emit(Resource.Error("Couldn't reach server. Check your internet connection."))
+                send(Resource.Error("Couldn't reach server. Check your internet connection."))
             }
         }
 }

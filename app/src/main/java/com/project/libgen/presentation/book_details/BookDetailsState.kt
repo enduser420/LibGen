@@ -4,7 +4,7 @@ import com.project.libgen.Screen
 import com.project.libgen.data.model.Book
 
 data class BookDetailsState(
-    val isLoading:Boolean = false,
+    val isLoading: Boolean = false,
     val book: Book? = null,
     val error: String = ""
 )
