@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.project.libgen.core.util.Resource
+import com.project.libgen.repository.AuthRepository
 import com.project.libgen.use_case.get_book_list.GetBookListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookListViewModel @Inject constructor(
-    private val getBookListUseCase: GetBookListUseCase
+    private val getBookListUseCase: GetBookListUseCase,
+    private val repository: AuthRepository
 ) : ViewModel() {
 
     private val _searchQuery = mutableStateOf("")
@@ -39,11 +41,11 @@ class BookListViewModel @Inject constructor(
         _searchQuery.value = "algorithm"
     }
 
-    fun onSearch(
-        searchQuery: String = _searchQuery.value,
-        filterOption: String = filterOptions[filterIndex.value]
-    ) {
-        getBookListUseCase(searchQuery, filterOption).onEach { result ->
+    fun onSearch() {
+        getBookListUseCase(
+            _searchQuery.value,
+            filterOptions[filterIndex.value]
+        ).onEach { result ->
             when (result) {
                 is Resource.Success -> {
                     searched.value = true
@@ -60,5 +62,9 @@ class BookListViewModel @Inject constructor(
             }
         }
             .launchIn(CoroutineScope(IO)) // NOTE: Don't use .launchIn(viewModelScope), since this function is not called from the init{} block but from the BookList Screen
+    }
+
+    fun logout() {
+        repository.signOut()
     }
 }

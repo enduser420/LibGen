@@ -10,6 +10,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LibraryBooks
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
@@ -56,7 +57,7 @@ private fun ScreenContent(
             TopAppBar(
                 title = {
                     Text(
-                        text = "LibGen",
+                        text = "Library Genesis",
                         style = MaterialTheme.typography.h6,
                         fontWeight = FontWeight.Bold
                     )
@@ -74,13 +75,37 @@ private fun ScreenContent(
             )
         },
         drawerContent = {
-            TextButton(onClick = { navController.navigate(Screen.BookmarkList.route) }) {
-                Row(
-                    Modifier.padding(5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(Icons.Filled.LibraryBooks, modifier = Modifier.padding(end = 5.dp), contentDescription = null)
-                    Text("Bookmarks")
+            Column {
+                TextButton(onClick = { navController.navigate(Screen.BookmarkList.route) }) {
+                    Row(
+                        Modifier.padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.LibraryBooks,
+                            modifier = Modifier.padding(end = 5.dp),
+                            contentDescription = null
+                        )
+                        Text("Bookmarks")
+                    }
+                }
+                TextButton(onClick = {
+                    viewModel.logout().also {
+                        navController.popBackStack()
+                        navController.navigate(Screen.UserLogin.route)
+                    }
+                }) {
+                    Row(
+                        Modifier.padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            Icons.Filled.Logout,
+                            modifier = Modifier.padding(end = 5.dp),
+                            contentDescription = null
+                        )
+                        Text("Sign Out")
+                    }
                 }
             }
         },
@@ -137,7 +162,7 @@ private fun ScreenContent(
                     snackbarController.getScope().launch {
                         snackbarController.showSnackbar(
                             scaffoldState = scaffoldState,
-                            message = "Network Error. Please check your Internet connection"
+                            message = state.error
                         )
                     }
                 }

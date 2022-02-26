@@ -10,12 +10,25 @@ import com.project.libgen.presentation.book_details.BookDetailsScreen
 import com.project.libgen.presentation.book_list.BookListScreen
 import com.project.libgen.presentation.bookmark_details.BookmarkDetailsScreen
 import com.project.libgen.presentation.bookmark_list.BookmarkListScreen
+import com.project.libgen.presentation.user_login.UserLoginScreen
+import com.project.libgen.presentation.user_signup.UserSignUpScreen
 
 @Composable
 fun SetupNavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    startDestination: String
 ) {
-    NavHost(navController = navController, startDestination = Screen.BookList.route) {
+    NavHost(navController = navController, startDestination = startDestination) {
+        composable(
+            route = Screen.UserLogin.route
+        ) {
+            UserLoginScreen(navController)
+        }
+        composable(
+            route = Screen.UserSignUp.route
+        ) {
+            UserSignUpScreen(navController)
+        }
         composable(
             route = Screen.BookList.route
         ) {

@@ -21,12 +21,13 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.io.File
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
-    private val application: Application,
+    application: Application,
     private val getBookDetailsUseCase: GetBookDetailsUseCase,
     private val bookmarkUseCases: BookmarkUseCases,
     private val LibGenBookDownload: LibGenDownloadRepository,
@@ -41,12 +42,14 @@ class BookDetailsViewModel @Inject constructor(
         application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
     init {
-//        getBookmarkBool()
         savedStateHandle.get<String>("id")?.let { bookId ->
             getBookDetails(bookId)
         }
+        getBookmarkBool()
+
         savedStateHandle.get<String>("downloadlink")?.let { bookLink ->
-            downloadlink.value = bookLink
+            val decoded = URLDecoder.decode(bookLink, StandardCharsets.UTF_8.toString())
+            downloadlink.value = decoded
         }
     }
 
@@ -54,11 +57,12 @@ class BookDetailsViewModel @Inject constructor(
         getBookDetailsUseCase(bookId).onEach { result ->
             when (result) {
                 is Resource.Success -> {
-                    // apply the received download from the list_screen to the book object
-                    _bookState.value = BookDetailsState(book = result.data.apply {
-                        result.data?.downloadlink = downloadlink.value
-                        result.data?.bookmarked = bookmarked.value ?: true
-                    })
+                    result.data?.let { book ->
+                        _bookState.value = BookDetailsState(book = book.apply {
+                            book.downloadlink = downloadlink
+                            book.bookmarked = bookmarked
+                        })
+                    }
                 }
                 is Resource.Error -> {
                     _bookState.value = BookDetailsState(
@@ -74,23 +78,21 @@ class BookDetailsViewModel @Inject constructor(
 
     private fun getBookmarkBool() {
         viewModelScope.launch {
-            bookmarked.value = bookmarkUseCases.getBookmarkBool(_bookState.value.book?.id ?: "")
+            _bookState.value.book?.let { book ->
+                bookmarked.value = bookmarkUseCases.getBookmarkBool(book.id)
+            }
         }
     }
 
     private fun downloadFile() {
-        val fileName = "${_bookState.value.book?.title}.${_bookState.value.book?.extension}"
-        val file =
-            File(Environment.DIRECTORY_DOCUMENTS + fileName)
-        if (file.exists()) {
-            return
-        } else {
-            CoroutineScope(IO).launch {
-                val getLink = LibGenBookDownload.downloadBookLink(downloadlink.value)
-                val request = DownloadManager.Request(Uri.parse(getLink))
-                request.setTitle("LibGen: ${_bookState.value.book?.title}")
-                request.setDescription("Downloading ${_bookState.value.book?.title}")
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+        _bookState.value.book?.let { book ->
+            val fileName = "${book.title}.${book.extension}"
+            val getLink = LibGenBookDownload.downloadBookLink(downloadlink.value)
+            getLink?.let { link ->
+                val request = DownloadManager.Request(Uri.parse(link))
+                request.setTitle("LibGen: ${book.title}")
+                request.setDescription("Downloading ${book.title}")
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
                 request.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOCUMENTS,
                     fileName
@@ -113,9 +115,11 @@ class BookDetailsViewModel @Inject constructor(
             }
             is BookDetailsEvent.unstarBook -> {
                 viewModelScope.launch {
-                    bookmarkUseCases.deleteBookmark(_bookState.value.book.apply {
-                        _bookState.value.book?.bookmarked = false
-                    })
+                    _bookState.value.book?.let { book ->
+                        bookmarkUseCases.deleteBookmark(book.apply {
+                            book.bookmarked = false
+                        })
+                    }
                     bookmarked.value = false
                 }
             }

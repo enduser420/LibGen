@@ -62,7 +62,6 @@ private fun ScreenContent(
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.navigateUp()
-//                             navController.popBackStack()
                     }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = null)
                     }
@@ -71,16 +70,16 @@ private fun ScreenContent(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                snackbarController.getScope().launch {
-                    viewModel.onEvent(BookDetailsEvent.downloadBook)
-                    snackbarController.showSnackbar(
-                        scaffoldState = scaffoldState,
-                        message = "Downloading...",
-                        actionLabel = "OK"
-                    )
-                }.invokeOnCompletion {
-                    viewModel.onEvent(BookDetailsEvent.downloadBook)
-                }
+//                snackbarController.getScope().launch {
+//                    viewModel.onEvent(BookDetailsEvent.downloadBook)
+//                    snackbarController.showSnackbar(
+//                        scaffoldState = scaffoldState,
+//                        message = "Downloading...",
+//                        actionLabel = "OK"
+//                    )
+//                }.invokeOnCompletion {
+                viewModel.onEvent(BookDetailsEvent.downloadBook)
+//                }
             }) {
                 Icon(Icons.Filled.Download, contentDescription = null)
             }
@@ -107,7 +106,7 @@ private fun ScreenContent(
                 snackbarController.getScope().launch {
                     snackbarController.showSnackbar(
                         scaffoldState = scaffoldState,
-                        message = "Network Error. Please check your Internet connection"
+                        message = state.error
                     )
                 }
             }
