@@ -1,6 +1,5 @@
 package com.project.libgen.presentation.book_details
 
-import android.annotation.SuppressLint
 import android.app.Application
 import android.app.DownloadManager
 import android.content.Context
@@ -16,8 +15,6 @@ import com.project.libgen.repository.LibGenDownloadRepository
 import com.project.libgen.use_case.bookmark.BookmarkUseCases
 import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -35,7 +32,8 @@ class BookDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _bookState = mutableStateOf(BookDetailsState())
-    val bookState: State<BookDetailsState> = _bookState
+    val bookState: State<BookDetailsState>
+        get() = _bookState
     private val downloadlink = mutableStateOf("")
     val bookmarked = mutableStateOf(_bookState.value.book?.bookmarked)
     private val downloadManager =
@@ -45,8 +43,6 @@ class BookDetailsViewModel @Inject constructor(
         savedStateHandle.get<String>("id")?.let { bookId ->
             getBookDetails(bookId)
         }
-        getBookmarkBool()
-
         savedStateHandle.get<String>("downloadlink")?.let { bookLink ->
             val decoded = URLDecoder.decode(bookLink, StandardCharsets.UTF_8.toString())
             downloadlink.value = decoded
@@ -62,6 +58,7 @@ class BookDetailsViewModel @Inject constructor(
                             book.downloadlink = downloadlink
                             book.bookmarked = bookmarked
                         })
+                        bookmarked.value = bookmarkUseCases.getBookmarkBool(book.id)
                     }
                 }
                 is Resource.Error -> {
@@ -74,14 +71,6 @@ class BookDetailsViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
-    }
-
-    private fun getBookmarkBool() {
-        viewModelScope.launch {
-            _bookState.value.book?.let { book ->
-                bookmarked.value = bookmarkUseCases.getBookmarkBool(book.id)
-            }
-        }
     }
 
     private fun downloadFile() {
@@ -102,11 +91,10 @@ class BookDetailsViewModel @Inject constructor(
         }
     }
 
-    @SuppressLint("RestrictedApi")
     fun onEvent(event: BookDetailsEvent) {
         when (event) {
             is BookDetailsEvent.starBook -> {
-                CoroutineScope(IO).launch {
+                viewModelScope.launch {
                     bookmarkUseCases.insertBookmark(_bookState.value.book.apply {
                         _bookState.value.book?.bookmarked = true
                     })
@@ -115,13 +103,11 @@ class BookDetailsViewModel @Inject constructor(
             }
             is BookDetailsEvent.unstarBook -> {
                 viewModelScope.launch {
-                    _bookState.value.book?.let { book ->
-                        bookmarkUseCases.deleteBookmark(book.apply {
-                            book.bookmarked = false
-                        })
-                    }
-                    bookmarked.value = false
+                    bookmarkUseCases.deleteBookmark(_bookState.value.book.apply {
+                        _bookState.value.book?.bookmarked = false
+                    })
                 }
+                bookmarked.value = false
             }
             is BookDetailsEvent.downloadBook -> {
                 downloadFile()

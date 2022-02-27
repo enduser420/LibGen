@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,7 +26,9 @@ fun BookDetailItem(
     viewModel: BookDetailsViewModel
 ) {
     viewModel.bookState.value.book?.let { book ->
-        val bookmarked = remember { viewModel.bookmarked }
+        val bookmarked by remember {
+            viewModel.bookmarked
+        }
         val painter = rememberImagePainter(
             data = "http://library.lol/covers/${book.coverurl}",
             builder = {
@@ -56,7 +59,7 @@ fun BookDetailItem(
                 text = book.title?.ifBlank { "N/A" }.toString(),
                 style = MaterialTheme.typography.body1
             )
-            if (bookmarked.value == true) {
+            if (bookmarked == true) {
                 IconButton(onClick = {
                     viewModel.onEvent(BookDetailsEvent.unstarBook)
                     println("un-staring")

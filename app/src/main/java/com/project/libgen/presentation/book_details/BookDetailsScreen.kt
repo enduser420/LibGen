@@ -12,6 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -70,16 +72,7 @@ private fun ScreenContent(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-//                snackbarController.getScope().launch {
-//                    viewModel.onEvent(BookDetailsEvent.downloadBook)
-//                    snackbarController.showSnackbar(
-//                        scaffoldState = scaffoldState,
-//                        message = "Downloading...",
-//                        actionLabel = "OK"
-//                    )
-//                }.invokeOnCompletion {
                 viewModel.onEvent(BookDetailsEvent.downloadBook)
-//                }
             }) {
                 Icon(Icons.Filled.Download, contentDescription = null)
             }

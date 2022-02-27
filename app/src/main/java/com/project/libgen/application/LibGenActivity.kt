@@ -5,11 +5,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import com.project.libgen.Screen
 import com.project.libgen.SetupNavGraph
 import com.project.libgen.presentation.user_login.UserLogInViewModel
-import com.project.libgen.presentation.user_signup.UserSignUpViewModel
 import com.project.libgen.ui.theme.LibGenTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,9 +24,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LibGenTheme {
+                val configuration = LocalConfiguration.current
                 val screen by viewModel.startDestination
-                navController = rememberNavController()
-                SetupNavGraph(navController = navController, startDestination = screen)
+                navController = rememberAnimatedNavController()
+                SetupNavGraph(
+                    navController = navController,
+                    startDestination = Screen.BookList.route,
+//                    startDestination = screen,
+                    width = configuration.screenWidthDp/2
+                )
             }
         }
     }
