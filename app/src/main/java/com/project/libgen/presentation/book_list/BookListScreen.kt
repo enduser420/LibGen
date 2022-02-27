@@ -18,6 +18,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -33,6 +34,7 @@ import com.project.libgen.presentation.book_list.components.BookItem
 import com.project.libgen.presentation.book_list.components.FilterSection
 import com.project.libgen.presentation.bookmark_list.components.ConfirmDialog
 import com.project.libgen.presentation.components.util.SnackbarController
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,7 +44,6 @@ fun BookListScreen(
     ScreenContent(navController)
 }
 
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 private fun ScreenContent(
     navController: NavController,
@@ -68,7 +69,10 @@ private fun ScreenContent(
             onDismiss = { showDialog = false },
             onConfirm = {
                 showDialog = false
-//                viewModel.logout()
+                scope.launch {
+                    scaffoldState.drawerState.close()
+                }
+                viewModel.logout()
             }
         )
     }
@@ -97,42 +101,35 @@ private fun ScreenContent(
             )
         },
         drawerContent = {
-            Column {
-                userState?.let {
-                    Text(text = it.uid)
-                }
-                TextButton(onClick = {
-                    navController.navigate(Screen.BookmarkList.route)
-                }) {
-                    Row(
-                        Modifier.padding(5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            Icons.Filled.LibraryBooks,
-                            modifier = Modifier.padding(end = 5.dp),
-                            contentDescription = null
-                        )
-                        Text("Bookmarks")
-                    }
-                }
-                TextButton(
-                    onClick = {
-                        showDialog = true
-                    }
+            Column(
+                modifier = Modifier.padding(vertical = 5.dp),
+            ) {
+                Box(
+                    modifier = Modifier.height(150.dp),
+                    contentAlignment = Alignment.BottomStart
                 ) {
-                    Row(
-                        Modifier.padding(5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(
-                            Icons.Filled.Logout,
-                            modifier = Modifier.padding(end = 5.dp),
-                            contentDescription = null
+                    userState?.let { user ->
+                        Text(
+                            text = user.uid,
+                            style = MaterialTheme.typography.h6,
+                            fontWeight = FontWeight.Bold
                         )
-                        Text("Sign Out")
                     }
                 }
+                DrawerItem(
+                    drawerIcon = Icons.Filled.LibraryBooks,
+                    drawerText = "Bookmarks",
+                    scope = scope,
+                    scaffoldState = scaffoldState,
+                    onClickAction = { navController.navigate(Screen.BookmarkList.route) }
+                )
+                DrawerItem(
+                    drawerIcon = Icons.Filled.Logout,
+                    drawerText = "Sign Out",
+                    scope = scope,
+                    scaffoldState = scaffoldState,
+                    onClickAction = { showDialog = true }
+                )
             }
         },
         content = {
@@ -151,19 +148,6 @@ private fun ScreenContent(
                     scaffoldState = scaffoldState,
                     viewModel = viewModel
                 )
-//                if (userState?.error.isNotBlank()) {
-//                    snackbarController.getScope().launch {
-//                        snackbarController.showSnackbar(
-//                            scaffoldState = scaffoldState,
-//                            message = state.error
-//                        )
-//                    }
-//                }
-//                if (userState.isLoading) {
-//                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                        CircularProgressIndicator()
-//                    }
-//                }
             }
         })
 }
@@ -247,5 +231,33 @@ fun BookList(
             text = "No results.",
             style = MaterialTheme.typography.h5,
         )
+    }
+}
+
+@Composable
+fun DrawerItem(
+    drawerIcon: ImageVector,
+    drawerText: String,
+    scope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    onClickAction: () -> Unit
+) {
+    TextButton(onClick = {
+        onClickAction()
+        scope.launch {
+            scaffoldState.drawerState.close()
+        }
+    }) {
+        Row(
+            Modifier.padding(5.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                drawerIcon,
+                modifier = Modifier.padding(end = 5.dp),
+                contentDescription = null
+            )
+            Text(text = drawerText)
+        }
     }
 }

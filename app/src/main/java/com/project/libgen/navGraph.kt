@@ -79,7 +79,6 @@ fun SetupNavGraph(
         }
         composable(
             route = Screen.BookDetails.route,
-
             enterTransition = {
                 slideInHorizontally(
                     initialOffsetX = { width },
@@ -104,7 +103,19 @@ fun SetupNavGraph(
             BookDetailsScreen(navController)
         }
         composable(
-            route = Screen.BookmarkList.route
+            route = Screen.BookmarkList.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { width },
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { width },
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(200))
+            }
         ) {
             BookmarkListScreen(navController)
         }

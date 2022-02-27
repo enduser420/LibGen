@@ -8,7 +8,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavHostController
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import com.project.libgen.Screen
 import com.project.libgen.SetupNavGraph
 import com.project.libgen.presentation.user_login.UserLogInViewModel
 import com.project.libgen.ui.theme.LibGenTheme
@@ -29,9 +28,9 @@ class MainActivity : ComponentActivity() {
                 navController = rememberAnimatedNavController()
                 SetupNavGraph(
                     navController = navController,
-                    startDestination = Screen.BookList.route,
-//                    startDestination = screen,
-                    width = configuration.screenWidthDp/2
+//                    startDestination = Screen.BookList.route,
+                    startDestination = screen,
+                    width = configuration.screenWidthDp / 2
                 )
             }
         }
