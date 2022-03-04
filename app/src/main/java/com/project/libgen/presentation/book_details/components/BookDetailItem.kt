@@ -11,6 +11,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,11 +21,13 @@ import coil.compose.rememberImagePainter
 import com.project.libgen.R
 import com.project.libgen.presentation.book_details.BookDetailsEvent
 import com.project.libgen.presentation.book_details.BookDetailsViewModel
+import com.project.libgen.presentation.components.util.UserState
 
 @Composable
 fun BookDetailItem(
     viewModel: BookDetailsViewModel
 ) {
+    val currentUser by viewModel.currentUser.observeAsState(UserState())
     viewModel.bookState.value.book?.let { book ->
         val bookmarked by remember {
             viewModel.bookmarked
@@ -59,17 +62,21 @@ fun BookDetailItem(
                 text = book.title?.ifBlank { "N/A" }.toString(),
                 style = MaterialTheme.typography.body1
             )
-            if (bookmarked == true) {
-                IconButton(onClick = {
-                    viewModel.onEvent(BookDetailsEvent.unstarBook)
-                }) {
-                    Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
-                }
-            } else {
-                IconButton(onClick = {
-                    viewModel.onEvent(BookDetailsEvent.starBook)
-                }) {
-                    Icon(Icons.Default.StarBorder, contentDescription = null)
+            currentUser.user?.let {
+                if (!it.isAnonymous) {
+                    if (bookmarked == true) {
+                        IconButton(onClick = {
+                            viewModel.onEvent(BookDetailsEvent.unstarBook)
+                        }) {
+                            Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            viewModel.onEvent(BookDetailsEvent.starBook)
+                        }) {
+                            Icon(Icons.Default.StarBorder, contentDescription = null)
+                        }
+                    }
                 }
             }
         }

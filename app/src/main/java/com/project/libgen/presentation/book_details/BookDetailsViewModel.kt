@@ -7,13 +7,12 @@ import android.net.Uri
 import android.os.Environment
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
 import com.project.libgen.data.data_source.BookDao
+import com.project.libgen.presentation.components.util.UserState
 import com.project.libgen.repository.LibGenDownloadRepository
 import com.project.libgen.use_case.bookmark.BookmarkUseCases
 import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
@@ -42,6 +41,11 @@ class BookDetailsViewModel @Inject constructor(
     val bookmarked = mutableStateOf(_bookState.value.book?.bookmarked)
     private val downloadManager =
         application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+    private var _currentUser: MutableLiveData<UserState> =
+        MutableLiveData(UserState(user = Firebase.auth.currentUser))
+    val currentUser: LiveData<UserState>
+        get() = _currentUser
 
     init {
         savedStateHandle.get<String>("id")?.let { bookId ->
