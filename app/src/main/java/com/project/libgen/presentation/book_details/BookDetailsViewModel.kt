@@ -10,7 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
+import com.project.libgen.data.data_source.BookDao
 import com.project.libgen.repository.LibGenDownloadRepository
 import com.project.libgen.use_case.bookmark.BookmarkUseCases
 import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
@@ -28,6 +31,7 @@ class BookDetailsViewModel @Inject constructor(
     private val getBookDetailsUseCase: GetBookDetailsUseCase,
     private val bookmarkUseCases: BookmarkUseCases,
     private val LibGenBookDownload: LibGenDownloadRepository,
+    private val bookDao: BookDao,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -95,17 +99,33 @@ class BookDetailsViewModel @Inject constructor(
         when (event) {
             is BookDetailsEvent.starBook -> {
                 viewModelScope.launch {
-                    bookmarkUseCases.insertBookmark(_bookState.value.book.apply {
-                        _bookState.value.book?.bookmarked = true
-                    })
+                    _bookState.value.book?.let {
+                        bookmarkUseCases.insertBookmark(it.apply {
+                            it.bookmarked = true
+                        })
+                        Firebase.auth.currentUser?.let { user ->
+                            bookDao.addBook(it.apply {
+                                it.bookmarked = true
+                                it.userId = user.uid
+                            })
+                        }
+                    }
                 }
                 bookmarked.value = true
             }
             is BookDetailsEvent.unstarBook -> {
                 viewModelScope.launch {
-                    bookmarkUseCases.deleteBookmark(_bookState.value.book.apply {
-                        _bookState.value.book?.bookmarked = false
-                    })
+                    _bookState.value.book?.let {
+                        bookmarkUseCases.deleteBookmark(it.apply {
+                            it.bookmarked = false
+                        })
+                        Firebase.auth.currentUser?.let { user ->
+                            bookDao.deleteBook(
+                                userId = user.uid,
+                                bookId = it.id
+                            )
+                        }
+                    }
                 }
                 bookmarked.value = false
             }

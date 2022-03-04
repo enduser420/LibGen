@@ -41,7 +41,7 @@ data class BookDto(
     var filesize: String?
 )
 
-fun BookDto.toBook() : Book {
+fun BookDto.toBook(): Book {
     return Book(
         id = id,
         author = author,

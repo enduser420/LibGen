@@ -11,6 +11,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class LibGenSearchRepositoryModule {
+
     @Singleton
     @Provides
     fun provideLibGenSearch() : LibGenSearchRepository {

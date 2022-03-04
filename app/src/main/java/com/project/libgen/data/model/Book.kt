@@ -23,6 +23,7 @@ data class Book(
     val edition: String? = "",
     val language: String? = "",
     val filesize: String? = "",
+    var userId: String? = "",
     var downloadlink: String? = "", // var because this needs to be changed in BookDetailsViewModel
     @ColumnInfo(name = "bookmarked") var bookmarked: Boolean = false // ^
 )

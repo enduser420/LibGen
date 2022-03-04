@@ -27,13 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.project.libgen.Screen
 import com.project.libgen.presentation.book_list.components.BookItem
 import com.project.libgen.presentation.book_list.components.FilterSection
 import com.project.libgen.presentation.bookmark_list.components.ConfirmDialog
 import com.project.libgen.presentation.components.util.SnackbarController
+import com.project.libgen.presentation.components.util.UserState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -49,14 +48,14 @@ private fun ScreenContent(
     navController: NavController,
     viewModel: BookListViewModel = hiltViewModel()
 ) {
-    val userState by viewModel.currentUser.observeAsState(Firebase.auth.currentUser)
+    val userState by viewModel.currentUser.observeAsState(UserState())
     val state = viewModel.bookList.value
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val snackbarController = SnackbarController(viewModel.viewModelScope)
     LaunchedEffect(key1 = userState, block = {
-        if (userState == null) {
+        if (userState.user == null) {
             navController.popBackStack()
             navController.navigate(Screen.UserLogin.route)
         }
@@ -101,36 +100,46 @@ private fun ScreenContent(
             )
         },
         drawerContent = {
-            Column(
-                modifier = Modifier.padding(vertical = 5.dp),
-            ) {
-                Box(
-                    modifier = Modifier.height(150.dp),
-                    contentAlignment = Alignment.BottomStart
+            userState.user?.let {
+                Column(
+                    modifier = Modifier.padding(vertical = 5.dp),
                 ) {
-                    userState?.let { user ->
-                        Text(
-                            text = user.uid,
-                            style = MaterialTheme.typography.h6,
-                            fontWeight = FontWeight.Bold
-                        )
+                    Box(
+                        modifier = Modifier.height(150.dp),
+                        contentAlignment = Alignment.BottomStart
+                    ) {
+                        if (it.isAnonymous) {
+                            Text(
+                                text = "Guest",
+                                style = MaterialTheme.typography.h6,
+                                fontWeight = FontWeight.Bold
+                            )
+                        } else {
+                            Text(
+                                text = it.uid,
+                                style = MaterialTheme.typography.h6,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
-                DrawerItem(
-                    drawerIcon = Icons.Filled.LibraryBooks,
-                    drawerText = "Bookmarks",
-                    scope = scope,
-                    scaffoldState = scaffoldState,
-                    onClickAction = { navController.navigate(Screen.BookmarkList.route) }
-                )
-                DrawerItem(
-                    drawerIcon = Icons.Filled.Logout,
-                    drawerText = "Sign Out",
-                    scope = scope,
-                    scaffoldState = scaffoldState,
-                    onClickAction = { showDialog = true }
-                )
+                if (!it.isAnonymous) {
+                    DrawerItem(
+                        drawerIcon = Icons.Filled.LibraryBooks,
+                        drawerText = "Bookmarks",
+                        scope = scope,
+                        scaffoldState = scaffoldState,
+                        onClickAction = { navController.navigate(Screen.BookmarkList.route) }
+                    )
+                }
             }
+            DrawerItem(
+                drawerIcon = Icons.Filled.Logout,
+                drawerText = "Sign Out",
+                scope = scope,
+                scaffoldState = scaffoldState,
+                onClickAction = { showDialog = true }
+            )
         },
         content = {
             Column(
@@ -242,12 +251,15 @@ fun DrawerItem(
     scaffoldState: ScaffoldState,
     onClickAction: () -> Unit
 ) {
-    TextButton(onClick = {
-        onClickAction()
-        scope.launch {
-            scaffoldState.drawerState.close()
+    TextButton(
+        modifier = Modifier.fillMaxWidth(),
+        onClick = {
+            onClickAction()
+            scope.launch {
+                scaffoldState.drawerState.close()
+            }
         }
-    }) {
+    ) {
         Row(
             Modifier.padding(5.dp),
             verticalAlignment = Alignment.CenterVertically,

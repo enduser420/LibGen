@@ -62,14 +62,12 @@ fun BookDetailItem(
             if (bookmarked == true) {
                 IconButton(onClick = {
                     viewModel.onEvent(BookDetailsEvent.unstarBook)
-                    println("un-staring")
                 }) {
                     Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
                 }
             } else {
                 IconButton(onClick = {
                     viewModel.onEvent(BookDetailsEvent.starBook)
-                    println("staring")
                 }) {
                     Icon(Icons.Default.StarBorder, contentDescription = null)
                 }
