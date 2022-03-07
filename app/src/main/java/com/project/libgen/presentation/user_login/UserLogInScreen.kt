@@ -107,17 +107,15 @@ private fun ScreenContent(
                 Password(viewModel.passwordState)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
-                        modifier = Modifier.padding(horizontal = 5.dp),
                         onClick = viewModel::anonLogIn
                     ) {
                         Text(text = "Guest")
                     }
                     Button(
-                        modifier = Modifier.padding(end = 5.dp),
                         onClick = {
                             viewModel.emailState.clear()
                             viewModel.passwordState.clear()
@@ -126,7 +124,6 @@ private fun ScreenContent(
                         Text(text = "Clear")
                     }
                     Button(
-                        modifier = Modifier.padding(horizontal = 5.dp),
                         onClick = {
                             navController.navigate(route = Screen.UserSignUp.route)
                         }
@@ -134,7 +131,6 @@ private fun ScreenContent(
                         Text(text = "Register?")
                     }
                     Button(
-                        modifier = Modifier.padding(start = 5.dp),
                         enabled = viewModel.emailState.isValid() && viewModel.passwordState.isValid(),
                         onClick = viewModel::logIn
                     ) {
