@@ -11,11 +11,7 @@ sealed class Screen(val route: String) {
         fun passIdandLink(id: String, downloadlink: String): String {
             return "book_details/$id/$downloadlink"
         }
-        fun passId(id: String): String {
-            return this.route.replace(oldValue = book_id, newValue = id)
-        }
     }
-
     object BookmarkList : Screen("bookmark_list")
     object BookmarkDetails : Screen("bookmark_detail")
 }

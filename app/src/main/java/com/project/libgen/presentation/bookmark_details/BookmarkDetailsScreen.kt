@@ -1,7 +1,6 @@
-package com.project.libgen.presentation.book_details
+package com.project.libgen.presentation.bookmark_details
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,31 +11,21 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.google.api.Context
-import com.project.libgen.presentation.book_details.components.BookDetailItem
+import com.project.libgen.presentation.bookmark_details.components.BookmarkDetailItem
 import com.project.libgen.presentation.components.util.SnackbarController
 import kotlinx.coroutines.launch
 
 @Composable
-fun BookDetailsScreen(
+fun BookmarkDetailsScreen(
     navController: NavController
 ) {
     ScreenContent(navController)
@@ -46,49 +35,26 @@ fun BookDetailsScreen(
 @Composable
 private fun ScreenContent(
     navController: NavController,
-    viewModel: BookDetailsViewModel = hiltViewModel()
+    viewModel: BookmarkDetailsViewModel = hiltViewModel()
 ) {
     val state = viewModel.bookState.value
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberLazyListState()
     val snackbarController = SnackbarController(viewModel.viewModelScope)
-    var menuShow by remember { mutableStateOf(false) }
 
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Details",
-                        style = MaterialTheme.typography.h6,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navController.navigateUp()
-                    }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = null)
-                    }
-                },
-                actions = {
-                    IconButton(onClick = { menuShow = true }) {
-                        Icon(Icons.Filled.MoreVert, contentDescription = null)
-                    }
-                    DropdownMenu(expanded = menuShow, onDismissRequest = { menuShow = !menuShow }) {
-                        DropdownMenuItem(onClick = {
-                            menuShow = false
-                        }) {
-                            Text("Share")
-                        }
-                    }
-                }
-            )
-        },
+        modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                viewModel.onEvent(BookDetailsEvent.downloadBook)
+                snackbarController.getScope().launch {
+                    viewModel.onEvent(BookmarkDetailsEvent.downloadBook)
+                    snackbarController.showSnackbar(
+                        scaffoldState = scaffoldState,
+                        message = "Downloading...",
+                        actionLabel = "OK"
+                    )
+                }
             }) {
                 Icon(Icons.Filled.Download, contentDescription = null)
             }
@@ -99,7 +65,7 @@ private fun ScreenContent(
                     state = scrollState
                 ) {
                     item {
-                        BookDetailItem(viewModel)
+                        BookmarkDetailItem(it, viewModel)
                     }
                 }
             }
@@ -115,7 +81,7 @@ private fun ScreenContent(
                 snackbarController.getScope().launch {
                     snackbarController.showSnackbar(
                         scaffoldState = scaffoldState,
-                        message = state.error
+                        message = "Network Error. Please check your Internet connection"
                     )
                 }
             }
@@ -124,15 +90,6 @@ private fun ScreenContent(
                     CircularProgressIndicator()
                 }
             }
-        })
-}
-
-fun customShape() = object : Shape {
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        return Outline.Rectangle(Rect(0f, 0f, 100f /* width */, 131f /* height */))
-    }
+        }
+    )
 }

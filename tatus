@@ -1,0 +1,66 @@
+warning: LF will be replaced by CRLF in build.gradle.
+The file will have its original line endings in your working directory
+[1mdiff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml[m
+[1mindex 51c6370..ff87978 100644[m
+[1m--- a/app/src/main/AndroidManifest.xml[m
+[1m+++ b/app/src/main/AndroidManifest.xml[m
+[36m@@ -7,19 +7,17 @@[m
+     <application[m
+         android:name=".application.LibGenApplication"[m
+         android:allowBackup="false"[m
+[31m-        android:icon="@mipmap/ic_launcher"[m
+[32m+[m[32m        android:icon="@mipmap/ic_launcher_libgen"[m
+         android:label="@string/app_name"[m
+[31m-        android:roundIcon="@mipmap/ic_launcher_round"[m
+[32m+[m[32m        android:roundIcon="@mipmap/ic_launcher_libgen"[m
+         android:supportsRtl="true"[m
+         android:theme="@style/Theme.LibGen">[m
+         <activity[m
+             android:name=".application.MainActivity"[m
+             android:exported="true"[m
+[31m-            android:label="@string/app_name"[m
+             android:theme="@style/Theme.LibGen.NoActionBar">[m
+             <intent-filter>[m
+                 <action android:name="android.intent.action.MAIN" />[m
+[31m-[m
+                 <category android:name="android.intent.category.LAUNCHER" />[m
+             </intent-filter>[m
+         </activity>[m
+[1mdiff --git a/app/src/main/java/com/project/libgen/presentation/book_list/BookListViewModel.kt b/app/src/main/java/com/project/libgen/presentation/book_list/BookListViewModel.kt[m
+[1mindex b77ad63..665e39d 100644[m
+[1m--- a/app/src/main/java/com/project/libgen/presentation/book_list/BookListViewModel.kt[m
+[1m+++ b/app/src/main/java/com/project/libgen/presentation/book_list/BookListViewModel.kt[m
+[36m@@ -30,8 +30,6 @@[m [mclass BookListViewModel @Inject constructor([m
+     val filterText = listOf("Title", "Author(s)", "Series", "Publisher", "Year", "Language", "Tags", "Extension")[m
+     val filterOptions = listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")[m
+     val filterIndex = mutableStateOf(0)[m
+[31m-//    private val _filterSelected = mutableStateOf(filterText[0])[m
+[31m-//    val filterSelected = _filterSelected[m
+ [m
+     init {[m
+         _searchQuery.value = "algorithm"[m
+[1mdiff --git a/build.gradle b/build.gradle[m
+[1mindex 7f09068..0c8e6cf 100644[m
+[1m--- a/build.gradle[m
+[1m+++ b/build.gradle[m
+[36m@@ -8,7 +8,7 @@[m [mbuildscript {[m
+         mavenCentral()[m
+     }[m
+     dependencies {[m
+[31m-        classpath "com.android.tools.build:gradle:7.0.4"[m
+[32m+[m[32m        classpath 'com.android.tools.build:gradle:7.1.1'[m
+         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"[m
+         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.38.1'[m
+ [m
+[1mdiff --git a/gradle/wrapper/gradle-wrapper.properties b/gradle/wrapper/gradle-wrapper.properties[m
+[1mindex 0326422..9ee1ae4 100644[m
+[1m--- a/gradle/wrapper/gradle-wrapper.properties[m
+[1m+++ b/gradle/wrapper/gradle-wrapper.properties[m
+[36m@@ -1,6 +1,6 @@[m
+ #Fri Jan 14 23:37:34 IST 2022[m
+ distributionBase=GRADLE_USER_HOME[m
+[31m-distributionUrl=https\://services.gradle.org/distributions/gradle-7.0.2-bin.zip[m
+[32m+[m[32mdistributionUrl=https\://services.gradle.org/distributions/gradle-7.2-bin.zip[m
+ distributionPath=wrapper/dists[m
+ zipStorePath=wrapper/dists[m
+ zipStoreBase=GRADLE_USER_HOME[m

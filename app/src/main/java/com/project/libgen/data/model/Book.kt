@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Book(
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: String = "",
     val author: String? = "",
     val title: String? = "",
     val pages: String? = "",

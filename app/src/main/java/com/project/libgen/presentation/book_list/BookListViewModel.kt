@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
-import com.project.libgen.data.model.User
 import com.project.libgen.presentation.components.util.UserState
 import com.project.libgen.use_case.get_book_list.GetBookListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

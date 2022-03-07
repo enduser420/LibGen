@@ -123,7 +123,7 @@ private fun ScreenContent(
                         }
                     }
                 }
-                if (!it.isAnonymous) {
+//                if (!it.isAnonymous) {
                     DrawerItem(
                         drawerIcon = Icons.Filled.LibraryBooks,
                         drawerText = "Bookmarks",
@@ -131,7 +131,7 @@ private fun ScreenContent(
                         scaffoldState = scaffoldState,
                         onClickAction = { navController.navigate(Screen.BookmarkList.route) }
                     )
-                }
+//                }
             }
             DrawerItem(
                 drawerIcon = Icons.Filled.Logout,

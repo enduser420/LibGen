@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.project.libgen.R
@@ -53,29 +54,29 @@ fun BookDetailItem(
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
             Text(
                 text = "Title:",
                 style = MaterialTheme.typography.h6
             )
             Text(
                 text = book.title?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
+                style = MaterialTheme.typography.body1,
+                maxLines = 5,
+                overflow = TextOverflow.Ellipsis
             )
             currentUser.user?.let {
-                if (!it.isAnonymous) {
-                    if (bookmarked == true) {
-                        IconButton(onClick = {
-                            viewModel.onEvent(BookDetailsEvent.unstarBook)
-                        }) {
-                            Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
-                        }
-                    } else {
-                        IconButton(onClick = {
-                            viewModel.onEvent(BookDetailsEvent.starBook)
-                        }) {
-                            Icon(Icons.Default.StarBorder, contentDescription = null)
-                        }
+                if (bookmarked == true) {
+                    IconButton(modifier = Modifier.weight(1f), onClick = {
+                        viewModel.onEvent(BookDetailsEvent.unstarBook)
+                    }) {
+                        Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
+                    }
+                } else {
+                    IconButton(modifier = Modifier.weight(1f),onClick = {
+                        viewModel.onEvent(BookDetailsEvent.starBook)
+                    }) {
+                        Icon(Icons.Default.StarBorder, contentDescription = null)
                     }
                 }
             }
