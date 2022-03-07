@@ -16,6 +16,7 @@ import com.project.libgen.presentation.book_details.BookDetailsScreen
 import com.project.libgen.presentation.book_list.BookListScreen
 import com.project.libgen.presentation.bookmark_details.BookmarkDetailsScreen
 import com.project.libgen.presentation.bookmark_list.BookmarkListScreen
+import com.project.libgen.presentation.splash_screen.SplashScreen
 import com.project.libgen.presentation.user_login.UserLoginScreen
 import com.project.libgen.presentation.user_signup.UserSignUpScreen
 
@@ -26,6 +27,9 @@ fun SetupNavGraph(
     width: Int
 ) {
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
+        composable(route = Screen.SplashScreen.route) {
+            SplashScreen(navController)
+        }
         composable(
             route = Screen.UserLogin.route,
             exitTransition = {

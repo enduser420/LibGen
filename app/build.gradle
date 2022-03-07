@@ -90,7 +90,7 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutines"
 
     // Navigation Compose
-    implementation "androidx.navigation:navigation-compose:2.5.0-alpha02"
+    implementation "androidx.navigation:navigation-compose:$lifecycle_version"
     implementation "com.google.accompanist:accompanist-navigation-animation:0.24.3-alpha"
 
     // Jsoup
@@ -123,4 +123,5 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.8.1'
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
 }
