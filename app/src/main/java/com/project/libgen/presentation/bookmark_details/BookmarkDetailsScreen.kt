@@ -69,7 +69,7 @@ private fun ScreenContent(
                     }
                 }
             }
-            if (state.error.isNotEmpty()) {
+            if (state.error.isNotBlank()) {
                 Text(
                     text = ";(",
                     color = MaterialTheme.colors.error,

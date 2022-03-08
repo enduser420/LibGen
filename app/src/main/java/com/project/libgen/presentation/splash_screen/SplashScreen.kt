@@ -9,17 +9,21 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.R
 import com.project.libgen.Screen
+import com.project.libgen.presentation.components.util.UserState
 
 @Composable
 fun SplashScreen(
@@ -30,17 +34,19 @@ fun SplashScreen(
 
 @Composable
 fun ScreenContent(
-    navController: NavController
+    navController: NavController,
+    viewModel: SplashViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = true, block = {
-        Firebase.auth.currentUser.let {
-            if (it == null) {
-                navController.popBackStack()
-                navController.navigate(Screen.UserLogin.route)
-            } else {
-                navController.popBackStack()
-                navController.navigate(Screen.BookList.route)
-            }
+    val currentUser by viewModel.currentUser.observeAsState(UserState())
+    LaunchedEffect(key1 = currentUser, block = {
+        if (currentUser.user == null) {
+            navController.popBackStack()
+            navController.navigate(Screen.UserLogin.route)
+            println("login")
+        } else {
+            navController.popBackStack()
+            navController.navigate(Screen.BookList.route)
+            println("booklist")
         }
     })
     Column(

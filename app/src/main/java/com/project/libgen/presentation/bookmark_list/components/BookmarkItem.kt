@@ -22,9 +22,9 @@ fun BookmarkItem(
     bookmark: Book
 ) {
     fun onBookmarkClicked() {
-        println(bookmark)
-//        val encodedLink = URLEncoder.encode(bookmark.downloadlink, StandardCharsets.UTF_8.toString())
-//        navController.navigate(route = Screen.BookDetails.passIdandLink(bookmark.id, encodedLink))
+        val encodedLink =
+            URLEncoder.encode(bookmark.downloadlink, StandardCharsets.UTF_8.toString())
+        navController.navigate(route = Screen.BookDetails.passIdandLink(bookmark.id, encodedLink))
     }
     Card(
         modifier = Modifier

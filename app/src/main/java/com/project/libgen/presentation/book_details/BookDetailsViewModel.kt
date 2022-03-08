@@ -14,11 +14,14 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
 import com.project.libgen.data.data_source.BookmarkDao
+import com.project.libgen.presentation.book_details.components.BookDownloadState
 import com.project.libgen.presentation.components.util.UserState
-import com.project.libgen.repository.LibGenDownloadRepository
 import com.project.libgen.use_case.bookmark.BookmarkUseCases
+import com.project.libgen.use_case.get_book_details.DownloadBookUseCase
 import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -31,7 +34,7 @@ class BookDetailsViewModel @Inject constructor(
     private val application: Application,
     private val getBookDetailsUseCase: GetBookDetailsUseCase,
     private val bookmarkUseCases: BookmarkUseCases,
-    private val LibGenBookDownload: LibGenDownloadRepository,
+    private val LibGenBookDownloadUseCase: DownloadBookUseCase,
     private val bookmarkDao: BookmarkDao,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -39,6 +42,9 @@ class BookDetailsViewModel @Inject constructor(
     private val _bookState = mutableStateOf(BookDetailsState())
     val bookState: State<BookDetailsState>
         get() = _bookState
+    private val _downloadState = mutableStateOf(BookDownloadState())
+    val downloadState
+        get() = _downloadState
     private val _downloadlink = mutableStateOf("")
     val bookmarked = mutableStateOf(_bookState.value.book?.bookmarked)
     private val downloadManager =
@@ -97,18 +103,30 @@ class BookDetailsViewModel @Inject constructor(
     private fun downloadFile() {
         _bookState.value.book?.let { book ->
             val fileName = "${book.title}.${book.extension}"
-            val getLink = LibGenBookDownload.downloadBookLink(_downloadlink.value)
-            getLink?.let { link ->
-                val request = DownloadManager.Request(Uri.parse(link))
-                request.setTitle("LibGen: ${book.title}")
-                request.setDescription("Downloading ${book.title}")
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                request.setDestinationInExternalPublicDir(
-                    Environment.DIRECTORY_DOCUMENTS,
-                    fileName
-                )
-                downloadManager.enqueue(request)
-            }
+            LibGenBookDownloadUseCase(_downloadlink.value).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _downloadState.value = BookDownloadState(isLoading = true)
+                    }
+                    is Resource.Success -> {
+                        val request = DownloadManager.Request(Uri.parse(result.data))
+                        request.setTitle("Downloading ${book.title}")
+                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                        request.setDestinationInExternalPublicDir(
+                            Environment.DIRECTORY_DOCUMENTS,
+                            fileName
+                        )
+                        downloadManager.enqueue(request).run {
+                            _downloadState.value = BookDownloadState()
+                        }
+                    }
+                    is Resource.Error -> {
+                        _downloadState.value = BookDownloadState(
+                            error = result.message ?: "An unexpected error occurred"
+                        )
+                    }
+                }
+            }.launchIn(CoroutineScope(IO))
         }
     }
 

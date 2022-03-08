@@ -1,7 +1,6 @@
 package com.project.libgen.presentation.book_details
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,17 +19,14 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.google.api.Context
 import com.project.libgen.presentation.book_details.components.BookDetailItem
 import com.project.libgen.presentation.components.util.SnackbarController
 import kotlinx.coroutines.launch
@@ -49,6 +45,7 @@ private fun ScreenContent(
     viewModel: BookDetailsViewModel = hiltViewModel()
 ) {
     val state = viewModel.bookState.value
+    val downloadState = viewModel.downloadState.value
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberLazyListState()
     val snackbarController = SnackbarController(viewModel.viewModelScope)
@@ -103,7 +100,7 @@ private fun ScreenContent(
                     }
                 }
             }
-            if (state.error.isNotEmpty()) {
+            if (state.error.isNotBlank()) {
                 Text(
                     text = ";(",
                     color = MaterialTheme.colors.error,
@@ -122,6 +119,22 @@ private fun ScreenContent(
             if (state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
+                }
+            }
+            if (downloadState.isLoading) {
+                snackbarController.getScope().launch {
+                    snackbarController.showSnackbar(
+                        scaffoldState = scaffoldState,
+                        message = "Downloading ..."
+                    )
+                }
+            }
+            if (downloadState.error.isNotBlank()) {
+                snackbarController.getScope().launch {
+                    snackbarController.showSnackbar(
+                        scaffoldState = scaffoldState,
+                        message = downloadState.error
+                    )
                 }
             }
         })

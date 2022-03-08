@@ -1,5 +1,5 @@
 package com.project.libgen.repository
 
 interface LibGenDownloadRepository {
-    fun downloadBookLink(downloadLink: String): String?
+    suspend fun downloadBookLink(downloadLink: String): String?
 }

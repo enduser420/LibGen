@@ -123,15 +123,13 @@ private fun ScreenContent(
                         }
                     }
                 }
-//                if (!it.isAnonymous) {
-                    DrawerItem(
-                        drawerIcon = Icons.Filled.LibraryBooks,
-                        drawerText = "Bookmarks",
-                        scope = scope,
-                        scaffoldState = scaffoldState,
-                        onClickAction = { navController.navigate(Screen.BookmarkList.route) }
-                    )
-//                }
+                DrawerItem(
+                    drawerIcon = Icons.Filled.LibraryBooks,
+                    drawerText = "Bookmarks",
+                    scope = scope,
+                    scaffoldState = scaffoldState,
+                    onClickAction = { navController.navigate(Screen.BookmarkList.route) }
+                )
             }
             DrawerItem(
                 drawerIcon = Icons.Filled.Logout,
