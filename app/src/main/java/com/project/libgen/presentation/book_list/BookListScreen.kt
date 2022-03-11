@@ -30,11 +30,13 @@ import androidx.navigation.NavController
 import com.project.libgen.Screen
 import com.project.libgen.presentation.book_list.components.BookItem
 import com.project.libgen.presentation.book_list.components.FilterSection
-import com.project.libgen.presentation.bookmark_list.components.ConfirmDialog
+import com.project.libgen.presentation.components.ConfirmDialog
 import com.project.libgen.presentation.components.util.SnackbarController
 import com.project.libgen.presentation.components.util.UserState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun BookListScreen(
@@ -171,7 +173,7 @@ fun SearchBar(
         TextField(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 10.dp, end = 5.dp, top = 10.dp, bottom = 10.dp)
+                .padding(start = 10.dp, end = 5.dp, top = 10.dp, bottom = 2.dp)
                 .weight(1f),
             value = viewModel.searchQuery.value,
             keyboardOptions = KeyboardOptions(
@@ -211,8 +213,8 @@ fun BookList(
     viewModel: BookListViewModel
 ) {
     LazyColumn(
-        contentPadding = PaddingValues(5.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         state = scrollState
     ) {
         items(state.bookList) { book ->

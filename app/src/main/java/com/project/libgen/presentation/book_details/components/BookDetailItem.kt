@@ -11,24 +11,24 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.project.libgen.R
 import com.project.libgen.presentation.book_details.BookDetailsEvent
 import com.project.libgen.presentation.book_details.BookDetailsViewModel
-import com.project.libgen.presentation.components.util.UserState
 
 @Composable
 fun BookDetailItem(
     viewModel: BookDetailsViewModel
 ) {
-    val currentUser by viewModel.currentUser.observeAsState(UserState())
     viewModel.bookState.value.book?.let { book ->
         val bookmarked by remember {
             viewModel.bookmarked
@@ -54,155 +54,74 @@ fun BookDetailItem(
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
-            Text(
-                text = "Title:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.title?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1,
-                maxLines = 5,
-                overflow = TextOverflow.Ellipsis
-            )
-            currentUser.user?.let {
-                if (bookmarked == true) {
-                    IconButton(modifier = Modifier.weight(1f), onClick = {
-                        viewModel.onEvent(BookDetailsEvent.unstarBook)
-                    }) {
-                        Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
-                    }
-                } else {
-                    IconButton(modifier = Modifier.weight(1f),onClick = {
-                        viewModel.onEvent(BookDetailsEvent.starBook)
-                    }) {
-                        Icon(Icons.Default.StarBorder, contentDescription = null)
-                    }
+        RowItem(header = "Title:", content = book.title ?: "N/A", maxLines = 2, contentIcon = {
+            if (bookmarked == true) {
+                IconButton(onClick = {
+                    viewModel.onEvent(BookDetailsEvent.unstarBook)
+                }) {
+                    Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
+                }
+            } else {
+                IconButton(onClick = {
+                    viewModel.onEvent(BookDetailsEvent.starBook)
+                }) {
+                    Icon(Icons.Default.StarBorder, contentDescription = null)
                 }
             }
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Author(s):",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.author?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
+        })
+        RowItem(header = "Author(s):", content = book.author ?: "N/A")
+        RowItem(
+            header = "Description:",
+            verticalAlignment = Alignment.Top,
+            content = book.descr ?: "N/A",
+            maxLines = 5,
+            contentStyle = MaterialTheme.typography.subtitle1
+        )
+        RowItem(header = "Year:", content = book.year ?: "N/A")
+        RowItem(header = "Volume:", content = book.volumeinfo ?: "N/A")
+        RowItem(header = "Series:", content = book.series ?: "N/A")
+        RowItem(header = "Edition:", content = book.edition ?: "N/A")
+        RowItem(header = "Publisher:", content = book.publisher ?: "N/A")
+        RowItem(header = "City:", content = book.city ?: "N/A")
+        RowItem(header = "Pages:", content = book.pages ?: "N/A")
+        RowItem(header = "Language:", content = book.language ?: "N/A")
+        RowItem(header = "ISBN(s):", content = book.issn ?: "N/A")
+        RowItem(header = "Torrent:", content = book.torrent ?: "N/A", setSpacer = false)
+    }
+}
 
-        Column {
+@Composable
+fun RowItem(
+    modifier: Modifier = Modifier,
+    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
+    header: String,
+    content: String,
+    maxLines: Int = 2,
+    contentStyle: TextStyle = MaterialTheme.typography.body1,
+    contentIcon: @Composable () -> Unit = {},
+    setSpacer: Boolean = true
+) {
+    Column(
+        horizontalAlignment = Alignment.Start
+    ) {
+        Row(
+            modifier = modifier.fillMaxWidth().padding(horizontal = 8.dp),
+            verticalAlignment = verticalAlignment,
+            horizontalArrangement = Arrangement.Start
+        ) {
             Text(
-                text = "Description:",
-                style = MaterialTheme.typography.h6
+                text = header,
+                style = MaterialTheme.typography.h6,
             )
             Text(
-                text = book.descr?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.subtitle2
+                modifier = modifier,
+                maxLines = maxLines,
+                text = content,
+                overflow = TextOverflow.Ellipsis,
+                style = contentStyle
             )
+            contentIcon()
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Year:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.year?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Volume:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.volumeinfo?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Series:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.series?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Edition:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.edition?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Publisher:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.publisher?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "City:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.city?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Pages:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.pages?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "Language:",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.language?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-        }
-        Spacer(modifier = Modifier.height(5.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(
-                text = "ISBN(s):",
-                style = MaterialTheme.typography.h6
-            )
-            Text(
-                text = book.issn?.ifBlank { "N/A" }.toString(),
-                style = MaterialTheme.typography.body1
-            )
-
-        }
+        if (setSpacer) Spacer(modifier = Modifier.height(8.dp))
     }
 }

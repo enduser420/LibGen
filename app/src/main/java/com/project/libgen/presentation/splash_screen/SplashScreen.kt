@@ -19,8 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.project.libgen.R
 import com.project.libgen.Screen
 import com.project.libgen.presentation.components.util.UserState
@@ -46,7 +44,6 @@ fun ScreenContent(
         } else {
             navController.popBackStack()
             navController.navigate(Screen.BookList.route)
-            println("booklist")
         }
     })
     Column(
@@ -60,7 +57,7 @@ fun ScreenContent(
             contentDescription = null
         )
         Text(
-            text = "LibGen",
+            text = "Library Genesis",
             style = MaterialTheme.typography.h4,
             fontWeight = FontWeight.Bold,
             color = Color.White

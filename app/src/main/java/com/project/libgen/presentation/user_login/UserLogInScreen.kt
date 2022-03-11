@@ -6,9 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +40,8 @@ private fun ScreenContent(
     val state by viewModel.loginState.observeAsState(UserState())
     val scaffoldState = rememberScaffoldState()
     val snackbarController = SnackbarController(viewModel.viewModelScope)
+    val scope = rememberCoroutineScope()
+    var showDialog by remember { mutableStateOf(false) }
     val signInIntent = viewModel.googleSignInClient.signInIntent
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -49,7 +49,7 @@ private fun ScreenContent(
             val data: Intent? = result.data
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                val account = task.getResult(ApiException::class.java)!!
+                val account = task.getResult(ApiException::class.java)
                 viewModel.googleSignIn(account.idToken!!)
             } catch (e: ApiException) {
                 snackbarController.getScope().launch {
@@ -66,6 +66,34 @@ private fun ScreenContent(
             navController.navigate(Screen.BookList.route)
         }
     })
+//    if (showDialog) {
+//        ConfirmDialog(
+//            title = "Logging in as Guest.",
+//            content = "Guest users bookmarks are lost on uninstall. Are you sure you want to continue as Guest?",
+//            onDismiss = { showDialog = false },
+//            onConfirm = {
+//                showDialog = false
+//                scope.launch {
+//                    scaffoldState.drawerState.close()
+//                }
+//                viewModel.anonLogIn()
+//            }
+//        )
+//    }
+    if (showDialog) {
+        AlertDialog(
+            title = { Text("Logging in as Guest.") },
+            text = { Text("Guest users bookmarks are lost on uninstall") },
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDialog = false
+                    viewModel.anonLogIn()
+                }) {
+                    Text("Ok")
+                }
+            })
+    }
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState,
@@ -111,7 +139,7 @@ private fun ScreenContent(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
-                        onClick = viewModel::anonLogIn
+                        onClick = { showDialog = true }
                     ) {
                         Text(text = "Guest")
                     }

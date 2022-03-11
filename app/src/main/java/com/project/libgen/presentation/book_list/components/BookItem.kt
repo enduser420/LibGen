@@ -21,23 +21,28 @@ fun BookItem(
     navController: NavController,
     book: Book
 ) {
-    fun onBookClicked() {
-        val encodedLink = URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
-            navController.navigate(route = Screen.BookDetails.passIdandLink(book.id, encodedLink))
-    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        onClick = { onBookClicked() }) {
+        onClick = {
+            val encodedLink = URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
+            navController.navigate(
+                route = Screen.BookDetails.passIdandLink(
+                    book.id,
+                    encodedLink
+                )
+            )
+        }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(5.dp)
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically, modifier = Modifier
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 5.dp)
+                    .padding(bottom = 5.dp),
+                verticalAlignment = Alignment.Top
             ) {
                 Text(
                     text = book.id,
@@ -46,7 +51,7 @@ fun BookItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = book.title?.ifBlank { "N/A" }.toString(),
+                    text = book.title ?: "N/A",
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.body1,
                     maxLines = 2,
@@ -68,7 +73,7 @@ fun BookItem(
                 )
                 Row {
                     Text(text = "Pages: ${book.pages}", modifier = Modifier.padding(end = 5.dp))
-                    Text(text = book.extension?.ifBlank { "N/A" }.toString())
+                    Text(text = book.extension ?: "N/A")
                 }
             }
         }

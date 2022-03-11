@@ -21,16 +21,16 @@ fun BookmarkItem(
     navController: NavController,
     bookmark: Book
 ) {
-    fun onBookmarkClicked() {
-        val encodedLink =
-            URLEncoder.encode(bookmark.downloadlink, StandardCharsets.UTF_8.toString())
-        navController.navigate(route = Screen.BookDetails.passIdandLink(bookmark.id, encodedLink))
-    }
+//    fun onBookmarkClicked() {
+//        val encodedLink =
+//            URLEncoder.encode(bookmark.downloadlink, StandardCharsets.UTF_8.toString())
+//        navController.navigate(route = Screen.BookDetails.passIdandLink(bookmark.id, encodedLink))
+//    }
     Card(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = {
-            onBookmarkClicked()
+//            onBookmarkClicked()
         }) {
         Column(
             modifier = Modifier
@@ -49,7 +49,7 @@ fun BookmarkItem(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = bookmark.title?.ifBlank { "N/A" }.toString(),
+                    text = bookmark.title ?: "N/A",
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.body1,
                     maxLines = 2,
@@ -71,7 +71,7 @@ fun BookmarkItem(
                 )
                 Row {
                     Text(text = "Pages: ${bookmark.pages}", modifier = Modifier.padding(end = 5.dp))
-                    Text(text = bookmark.extension?.ifBlank { "N/A" }.toString())
+                    Text(text = bookmark.extension ?: "N/A")
                 }
             }
         }

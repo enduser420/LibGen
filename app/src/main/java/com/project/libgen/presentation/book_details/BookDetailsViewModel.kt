@@ -3,13 +3,14 @@ package com.project.libgen.presentation.book_details
 import android.app.Application
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.*
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
@@ -31,7 +32,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookDetailsViewModel @Inject constructor(
-    private val application: Application,
+    application: Application,
     private val getBookDetailsUseCase: GetBookDetailsUseCase,
     private val bookmarkUseCases: BookmarkUseCases,
     private val LibGenBookDownloadUseCase: DownloadBookUseCase,
@@ -42,26 +43,35 @@ class BookDetailsViewModel @Inject constructor(
     private val _bookState = mutableStateOf(BookDetailsState())
     val bookState: State<BookDetailsState>
         get() = _bookState
+
     private val _downloadState = mutableStateOf(BookDownloadState())
     val downloadState
         get() = _downloadState
+
     private val _downloadlink = mutableStateOf("")
+    val downloadlink
+        get() = _downloadlink
+
     val bookmarked = mutableStateOf(_bookState.value.book?.bookmarked)
+
     private val downloadManager =
         application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
 
     private var _currentUser: MutableLiveData<UserState> =
         MutableLiveData(UserState(user = Firebase.auth.currentUser))
-    val currentUser: LiveData<UserState>
-        get() = _currentUser
+
+    enum class Providers {
+        LOL,
+        CLOUDFLARE,
+        IPFS
+    }
 
     init {
         savedStateHandle.get<String>("id")?.let { bookId ->
-            Log.d("Init", bookId)
             getBookDetails(bookId)
         }
+
         savedStateHandle.get<String>("downloadlink")?.let { bookLink ->
-            Log.d("Init", bookLink)
             val decoded = URLDecoder.decode(bookLink, StandardCharsets.UTF_8.toString())
             _downloadlink.value = decoded
         }
@@ -81,9 +91,11 @@ class BookDetailsViewModel @Inject constructor(
 //                        }
                         _currentUser.value?.user?.let {
                             if (it.isAnonymous) {
-                                bookmarked.value = bookmarkUseCases.getLocalBookmarkBool(book.id)
+                                bookmarked.value =
+                                    bookmarkUseCases.getLocalBookmarkBool(book.id)
                             } else {
-                                bookmarked.value = bookmarkUseCases.getBookmarkBool(it.uid, book.id)
+                                bookmarked.value =
+                                    bookmarkUseCases.getBookmarkBool(it.uid, book.id)
                             }
                         }
                     }
@@ -103,21 +115,25 @@ class BookDetailsViewModel @Inject constructor(
     private fun downloadFile() {
         _bookState.value.book?.let { book ->
             val fileName = "${book.title}.${book.extension}"
+            
             LibGenBookDownloadUseCase(_downloadlink.value).onEach { result ->
                 when (result) {
                     is Resource.Loading -> {
                         _downloadState.value = BookDownloadState(isLoading = true)
                     }
                     is Resource.Success -> {
-                        val request = DownloadManager.Request(Uri.parse(result.data))
-                        request.setTitle("Downloading ${book.title}")
-                        request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                        request.setDestinationInExternalPublicDir(
-                            Environment.DIRECTORY_DOCUMENTS,
-                            fileName
-                        )
-                        downloadManager.enqueue(request).run {
-                            _downloadState.value = BookDownloadState()
+                        result.data?.let {
+                            val uri = Uri.parse(it[0])
+                            val request = DownloadManager.Request(uri)
+                            request.setTitle("LibGen: ${book.title}")
+                            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            request.setDestinationInExternalPublicDir(
+                                Environment.DIRECTORY_DOCUMENTS,
+                                fileName
+                            )
+                            downloadManager.enqueue(request).run {
+                                _downloadState.value = BookDownloadState()
+                            }
                         }
                     }
                     is Resource.Error -> {
@@ -127,6 +143,23 @@ class BookDetailsViewModel @Inject constructor(
                     }
                 }
             }.launchIn(CoroutineScope(IO))
+        }
+    }
+
+    private fun getTorrent() {
+        _bookState.value.book?.let {
+            val filename = "${it.md5}.torrent"
+            CoroutineScope(IO).launch {
+                val request =
+                    DownloadManager.Request(Uri.parse("https://libgen.rs/book/index.php?md5=${it.md5}&oftorrent="))
+                request.setTitle("Downloading torrent file")
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                request.setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    filename
+                )
+                downloadManager.enqueue(request)
+            }
         }
     }
 
@@ -175,18 +208,10 @@ class BookDetailsViewModel @Inject constructor(
             is BookDetailsEvent.downloadBook -> {
                 downloadFile()
             }
+            is BookDetailsEvent.getTorrent -> {
+                getTorrent()
+            }
         }
-    }
-
-    fun share() {
-        val shareIntent = Intent(Intent.ACTION_SEND)
-        shareIntent.type = "type/plain"
-        val shareBody = ""
-        val shareSub = ""
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, shareBody)
-        shareIntent.putExtra(Intent.EXTRA_TEXT, shareSub)
-        shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        application.baseContext.startActivity(Intent.createChooser(shareIntent, "Share"))
     }
 }
 

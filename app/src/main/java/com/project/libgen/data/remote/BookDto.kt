@@ -29,6 +29,8 @@ data class BookDto(
     var series: String?,
     @SerializedName("volumeinfo")
     var volumeinfo: String?,
+    @SerializedName("md5")
+    var md5: String?,
     @SerializedName("city")
     var city: String?,
     @SerializedName("edition")
@@ -54,6 +56,7 @@ fun BookDto.toBook(): Book {
         descr = descr,
         issn = issn,
         volumeinfo = volumeinfo,
+        md5 = md5,
         torrent = torrent,
         city = city,
         edition = edition,

@@ -1,6 +1,5 @@
 package com.project.libgen.di
 
-import com.project.libgen.data.remote.BookDto
 import com.project.libgen.data.remote.LibGenApi
 import com.project.libgen.repository.LibGenBookRepository
 import com.project.libgen.repository.LibGenBookRepositoryImpl
@@ -10,7 +9,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 import javax.inject.Singleton
 
 

@@ -1,6 +1,9 @@
 package com.project.libgen.presentation.book_details
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,11 +22,13 @@ import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -50,7 +55,7 @@ private fun ScreenContent(
     val scrollState = rememberLazyListState()
     val snackbarController = SnackbarController(viewModel.viewModelScope)
     var menuShow by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -74,10 +79,36 @@ private fun ScreenContent(
                         Icon(Icons.Filled.MoreVert, contentDescription = null)
                     }
                     DropdownMenu(expanded = menuShow, onDismissRequest = { menuShow = !menuShow }) {
+                        val downloadlink = viewModel.downloadlink.value
                         DropdownMenuItem(onClick = {
+                            val shareIntent = Intent(Intent.ACTION_SEND)
+                            shareIntent.type = "text/plain"
+                            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Share Link")
+                            shareIntent.putExtra(
+                                Intent.EXTRA_TEXT,
+                                "Check out\n$downloadlink"
+                            )
+                            val chooser = Intent.createChooser(shareIntent, "Share")
+                            try {
+                                startActivity(context, chooser, null)
+                            } catch (e: ActivityNotFoundException) {
+                                e.printStackTrace()
+                            }
                             menuShow = false
                         }) {
                             Text("Share")
+                        }
+                        DropdownMenuItem(onClick = {
+                            val link = Uri.parse(downloadlink)
+                            val browserIntent = Intent(Intent.ACTION_VIEW, link)
+                            try {
+                                startActivity(context, browserIntent, null)
+                            } catch (e: ActivityNotFoundException) {
+                                e.printStackTrace()
+                            }
+                            menuShow = false
+                        }) {
+                            Text("Open in Browser")
                         }
                     }
                 }
@@ -91,13 +122,11 @@ private fun ScreenContent(
             }
         },
         content = {
-            state.book?.let {
-                LazyColumn(
-                    state = scrollState
-                ) {
-                    item {
-                        BookDetailItem(viewModel)
-                    }
+            LazyColumn(
+                state = scrollState
+            ) {
+                item {
+                    BookDetailItem(viewModel)
                 }
             }
             if (state.error.isNotBlank()) {

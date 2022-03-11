@@ -17,10 +17,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.project.libgen.presentation.bookmark_list.components.BookmarkItem
-import com.project.libgen.presentation.bookmark_list.components.ConfirmDialog
+import com.project.libgen.Screen
+import com.project.libgen.presentation.book_list.components.BookItem
+import com.project.libgen.presentation.components.ConfirmDialog
 import com.project.libgen.presentation.components.util.SnackbarController
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun BookmarkListScreen(
@@ -85,12 +88,12 @@ fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 LazyColumn(
-                    contentPadding = PaddingValues(5.dp),
-                    verticalArrangement = Arrangement.spacedBy(5.dp),
+                    contentPadding = PaddingValues(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
                     state = scrollState
                 ) {
                     items(state.bookmarkList) { bookmark ->
-                        BookmarkItem(navController, bookmark)
+                        BookItem(navController, bookmark)
                     }
                 }
                 if (state.error.isNotBlank()) {

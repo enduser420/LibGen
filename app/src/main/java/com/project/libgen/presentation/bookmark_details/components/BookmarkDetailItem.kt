@@ -52,7 +52,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.title?.ifBlank { "N/A" }.toString(),
+            text = book.title?: "N/A",
             style = MaterialTheme.typography.body1
         )
         IconButton(onClick = {
@@ -77,7 +77,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.author?.ifBlank { "N/A" }.toString(),
+            text = book.author?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -89,7 +89,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.descr?.ifBlank { "N/A" }.toString(),
+            text = book.descr?: "N/A",
             style = MaterialTheme.typography.subtitle2
         )
     }
@@ -100,7 +100,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.year?.ifBlank { "N/A" }.toString(),
+            text = book.year?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -111,7 +111,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.volumeinfo?.ifBlank { "N/A" }.toString(),
+            text = book.volumeinfo?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -122,7 +122,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.series?.ifBlank { "N/A" }.toString(),
+            text = book.series?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -133,7 +133,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.edition?.ifBlank { "N/A" }.toString(),
+            text = book.edition?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -144,7 +144,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.publisher?.ifBlank { "N/A" }.toString(),
+            text = book.publisher?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -155,7 +155,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.city?.ifBlank { "N/A" }.toString(),
+            text = book.city?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -166,7 +166,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.pages?.ifBlank { "N/A" }.toString(),
+            text = book.pages?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -177,7 +177,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.language?.ifBlank { "N/A" }.toString(),
+            text = book.language?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }
@@ -188,7 +188,7 @@ fun BookmarkDetailItem(
             style = MaterialTheme.typography.h6
         )
         Text(
-            text = book.issn?.ifBlank { "N/A" }.toString(),
+            text = book.issn?: "N/A",
             style = MaterialTheme.typography.body1
         )
     }

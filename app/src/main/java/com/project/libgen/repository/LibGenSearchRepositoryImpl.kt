@@ -12,13 +12,13 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
         rows.forEach { item ->
             val id = item.child(0).text()
             val author = item.child(1).select("a").text()
-            val title = item.child(2).text()
-            val publisher = item.child(3).text()
-            val year = item.child(4).text()
-            val pages = item.child(5).text()
-            val language = item.child(6).text()
-            val filesize = item.child(7).text()
-            val extension = item.child(8).text()
+            val title = item.child(2).select("a[title=\"\"]")[0].ownText()
+            val publisher = item.child(3).ownText()
+            val year = item.child(4).ownText()
+            val pages = item.child(5).ownText()
+            val language = item.child(6).ownText()
+            val filesize = item.child(7).ownText()
+            val extension = item.child(8).ownText()
             val downloadlink = item.child(9).select("a").attr("href")
             bookList.add(
                 Book(
@@ -32,8 +32,8 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
                     extension = extension ?: null,
                     filesize = filesize ?: null,
                     downloadlink = downloadlink ?: null,
-                    issn = "",
-                    series = "",
+                    issn = null,
+                    series = null,
                     coverurl = null,
                     descr = null,
                     volumeinfo = null,
