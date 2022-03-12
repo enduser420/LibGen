@@ -102,12 +102,12 @@ private fun ScreenContent(
                 actions = {
                     when (mode) {
                         Mode.NONFICTION -> {
-                            TextButton(onClick = { viewModel.setFiction() }) {
+                            TextButton(onClick = viewModel::toggleSection) {
                                 Text("Sci-tech")
                             }
                         }
                         Mode.FICTION -> {
-                            TextButton(onClick = { viewModel.setNonFiction() }) {
+                            TextButton(onClick = viewModel::toggleSection) {
                                 Text("Fiction")
                             }
                         }

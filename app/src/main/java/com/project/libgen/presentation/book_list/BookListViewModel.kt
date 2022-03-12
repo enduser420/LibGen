@@ -55,14 +55,20 @@ class BookListViewModel @Inject constructor(
         _searchQuery.value = "algorithm"
     }
 
-    fun setNonFiction() {
-        modeState.postValue(Mode.NONFICTION)
-        _bookList.value = BookListState(bookList = emptyList())
-    }
-
-    fun setFiction() {
-        modeState.postValue(Mode.FICTION)
-        _bookList.value = BookListState(bookList = emptyList())
+    fun toggleSection() {
+        when (modeState.value) {
+            Mode.FICTION -> {
+                modeState.postValue(Mode.NONFICTION)
+                searched.value = false
+                _bookList.value = BookListState(bookList = emptyList())
+            }
+            Mode.NONFICTION -> {
+                modeState.postValue(Mode.FICTION)
+                searched.value = false
+                _bookList.value = BookListState(bookList = emptyList())
+            }
+            null -> {}
+        }
     }
 
     fun onSearch() {
