@@ -1,7 +1,6 @@
 package com.project.libgen.use_case.get_book_details
 
 import com.project.libgen.core.util.Resource
-import com.project.libgen.presentation.book_details.components.BookDownloadState
 import com.project.libgen.repository.LibGenDownloadRepository
 import kotlinx.coroutines.flow.channelFlow
 import retrofit2.HttpException

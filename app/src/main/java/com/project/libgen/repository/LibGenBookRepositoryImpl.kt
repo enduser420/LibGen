@@ -22,7 +22,8 @@ class LibGenBookRepositoryImpl @Inject constructor(
         val title =
             doc.select("table.record > tbody > tr:nth-child(1) > td.record_title").text()
         val author =
-            doc.select("table.record > tbody > tr:nth-child(2) > td:nth-child(2) > ul.catalog_authors > li > a").text()
+            doc.select("table.record > tbody > tr:nth-child(2) > td:nth-child(2) > ul.catalog_authors > li > a")
+                .text()
         val language =
             doc.select("table.record > tbody > tr:nth-child(3) > td:nth-child(2)").text()
         val year =
@@ -37,7 +38,8 @@ class LibGenBookRepositoryImpl @Inject constructor(
             doc.select("table.record > tbody > tr:nth-child(8) > td:nth-child(2)").text()
         val md5 = doc.select("table.hashes > tbody >tr:nth-child(1) >td ").text()
         val coverurl = doc.select("div.record_side").select("img").attr("src")
-        val downloadlink = doc.select("ul.record_mirrors > li:nth-child(1)").select("a").attr("href")
+        val downloadlink =
+            doc.select("ul.record_mirrors > li:nth-child(1)").select("a").attr("href")
         return Book(
             id = id,
             title = title,

@@ -116,7 +116,7 @@ class BookDetailsViewModel @Inject constructor(
     private fun downloadFile() {
         _bookState.value.book?.let { book ->
             val fileName = "${book.title}.${book.extension}"
-            
+
             LibGenBookDownloadUseCase(_downloadlink.value).onEach { result ->
                 when (result) {
                     is Resource.Loading -> {

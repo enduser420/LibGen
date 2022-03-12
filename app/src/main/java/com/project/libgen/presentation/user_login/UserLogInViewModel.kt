@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserLogInViewModel @Inject constructor(
-    private val application: Application,
+    application: Application,
     private val LogInUseCase: LogInUseCase,
     private val GoogleSignInUseCase: GoogleSignInUseCase,
 ) : ViewModel() {

@@ -28,11 +28,11 @@ class UserSignUpViewModel @Inject constructor(
     val signupState: LiveData<UserState>
         get() = _signupState
 
-    init {
-        displayNameState.text = "testing"
-        emailState.text = "testin@gmail.com"
-        passwordState.text = "testing@123"
-    }
+//    init {
+//        displayNameState.text = "testing"
+//        emailState.text = "testin@gmail.com"
+//        passwordState.text = "testing@123"
+//    }
 
     fun signUp() {
         SignUpUseCase(

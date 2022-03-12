@@ -22,5 +22,4 @@ sealed class Screen(val route: String) {
     }
 
     object BookmarkList : Screen("bookmark_list")
-    object BookmarkDetails : Screen("bookmark_detail")
 }

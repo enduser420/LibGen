@@ -15,9 +15,11 @@ class GoogleSignInUseCase @Inject constructor(
             val user = authRepository.googleSignIn(credential)
             send(Resource.Success(user))
         } catch (e: Exception) {
-            send(Resource.Error(
-                message = e.localizedMessage ?: "Error."
-            ))
+            send(
+                Resource.Error(
+                    message = e.localizedMessage ?: "Error."
+                )
+            )
         }
     }
 }

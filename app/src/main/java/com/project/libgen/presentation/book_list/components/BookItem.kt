@@ -29,8 +29,8 @@ fun BookItem(
         onClick = {
             when (mode) {
                 Mode.NONFICTION -> {
-            val encodedLink =
-                URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
+                    val encodedLink =
+                        URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
                     navController.navigate(
                         route = Screen.BookDetails.passIdandLink(
                             book.id,
@@ -42,10 +42,12 @@ fun BookItem(
                 Mode.FICTION -> {
                     val encodedLink =
                         URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
-                    navController.navigate(route = Screen.FictionBookDetails.passMd5andLink(
-                        book.md5.toString(),
-                        encodedLink
-                    ))
+                    navController.navigate(
+                        route = Screen.FictionBookDetails.passMd5andLink(
+                            book.md5.toString(),
+                            encodedLink
+                        )
+                    )
                 }
             }
         }) {

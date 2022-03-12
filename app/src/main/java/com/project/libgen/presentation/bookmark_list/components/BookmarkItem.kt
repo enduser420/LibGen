@@ -11,10 +11,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.project.libgen.Screen
 import com.project.libgen.data.model.Book
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @Composable
 fun BookmarkItem(

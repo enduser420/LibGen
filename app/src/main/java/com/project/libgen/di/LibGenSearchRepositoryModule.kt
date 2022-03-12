@@ -14,7 +14,7 @@ class LibGenSearchRepositoryModule {
 
     @Singleton
     @Provides
-    fun provideLibGenSearch() : LibGenSearchRepository {
+    fun provideLibGenSearch(): LibGenSearchRepository {
         return LibGenSearchRepositoryImpl()
     }
 }

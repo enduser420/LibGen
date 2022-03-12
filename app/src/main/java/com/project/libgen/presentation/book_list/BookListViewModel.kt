@@ -57,10 +57,12 @@ class BookListViewModel @Inject constructor(
 
     fun setNonFiction() {
         modeState.postValue(Mode.NONFICTION)
+        _bookList.value = BookListState(bookList = emptyList())
     }
 
     fun setFiction() {
         modeState.postValue(Mode.FICTION)
+        _bookList.value = BookListState(bookList = emptyList())
     }
 
     fun onSearch() {
@@ -71,7 +73,7 @@ class BookListViewModel @Inject constructor(
             Mode.FICTION -> {
                 onFictionSearch()
             }
-            else -> {}
+            null -> {}
         }
     }
 
@@ -98,7 +100,7 @@ class BookListViewModel @Inject constructor(
             .launchIn(CoroutineScope(IO)) // NOTE: Don't use .launchIn(viewModelScope), since this function is network related.
     }
 
-    fun onFictionSearch() {
+    private fun onFictionSearch() {
         getFictionBookListUseCase(_searchQuery.value)
             .onEach { result ->
                 when (result) {

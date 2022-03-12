@@ -59,7 +59,7 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
                     author = author,
                     series = series,
                     language = language,
-                    extension =extension,
+                    extension = extension,
                     downloadlink = downloadlink,
                     md5 = md5
                 )

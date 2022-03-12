@@ -3,7 +3,6 @@ package com.project.libgen.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.google.firebase.firestore.DocumentSnapshot
 import com.project.libgen.presentation.components.util.Mode
 
 @Entity

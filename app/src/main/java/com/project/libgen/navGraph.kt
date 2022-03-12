@@ -15,7 +15,6 @@ import com.google.accompanist.navigation.animation.composable
 import com.project.libgen.presentation.book_details.BookDetailsScreen
 import com.project.libgen.presentation.book_details.fiction_book_details.FictionBookDetailsScreen
 import com.project.libgen.presentation.book_list.BookListScreen
-import com.project.libgen.presentation.bookmark_details.BookmarkDetailsScreen
 import com.project.libgen.presentation.bookmark_list.BookmarkListScreen
 import com.project.libgen.presentation.splash_screen.SplashScreen
 import com.project.libgen.presentation.user_login.UserLoginScreen
@@ -123,16 +122,6 @@ fun SetupNavGraph(
             }
         ) {
             BookmarkListScreen(navController)
-        }
-        composable(
-            route = Screen.BookmarkDetails.route,
-            arguments = listOf(
-                navArgument("id") {
-                    type = NavType.StringType
-                }
-            )
-        ) {
-            BookmarkDetailsScreen(navController)
         }
         composable(
             route = Screen.FictionBookDetails.route,

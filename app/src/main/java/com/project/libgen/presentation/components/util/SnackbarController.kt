@@ -47,6 +47,7 @@ constructor(
             }
         }
     }
+
     private fun cancelActiveJob() {
         snackbarJob?.let { job ->
             job.cancel()
