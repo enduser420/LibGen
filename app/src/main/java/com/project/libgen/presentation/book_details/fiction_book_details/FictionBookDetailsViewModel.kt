@@ -1,6 +1,10 @@
 package com.project.libgen.presentation.book_details.fiction_book_details
 
 import android.app.Application
+import android.app.DownloadManager
+import android.content.Context
+import android.net.Uri
+import android.os.Environment
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
@@ -25,6 +29,8 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,9 +62,17 @@ class FictionBookDetailsViewModel @Inject constructor(
 
     private val _md5 = mutableStateOf("")
 
+    private val downloadManager =
+        application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
     init {
         savedStateHandle.get<String>("md5")?.let { md5 ->
             _md5.value = md5
+        }
+
+        savedStateHandle.get<String>("downloadlink")?.let { bookLink ->
+            val decoded = URLDecoder.decode(bookLink, StandardCharsets.UTF_8.toString())
+            _downloadlink.value = decoded
         }
     }
 
@@ -89,6 +103,40 @@ class FictionBookDetailsViewModel @Inject constructor(
                 }
             }
         }.launchIn(CoroutineScope(IO))
+    }
+
+    private fun downloadFile() {
+        _bookState.value.book?.let { book ->
+            val fileName = "${book.title}.${book.extension}"
+
+            LibGenBookDownloadUseCase(_downloadlink.value).onEach { result ->
+                when (result) {
+                    is Resource.Loading -> {
+                        _downloadState.value = BookDownloadState(isLoading = true)
+                    }
+                    is Resource.Success -> {
+                        result.data?.let {
+                            val uri = Uri.parse(it[0])
+                            val request = DownloadManager.Request(uri)
+                            request.setTitle("LibGen: ${book.title}")
+                            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                            request.setDestinationInExternalPublicDir(
+                                Environment.DIRECTORY_DOCUMENTS,
+                                fileName
+                            )
+                            downloadManager.enqueue(request).run {
+                                _downloadState.value = BookDownloadState()
+                            }
+                        }
+                    }
+                    is Resource.Error -> {
+                        _downloadState.value = BookDownloadState(
+                            error = result.message ?: "An unexpected error occurred"
+                        )
+                    }
+                }
+            }.launchIn(CoroutineScope(IO))
+        }
     }
 
     fun onEvent(event: BookDetailsEvent) {
@@ -134,7 +182,7 @@ class FictionBookDetailsViewModel @Inject constructor(
                 bookmarked.value = false
             }
             is BookDetailsEvent.downloadBook -> {
-//                downloadFile()
+                downloadFile()
             }
             else -> {}
         }

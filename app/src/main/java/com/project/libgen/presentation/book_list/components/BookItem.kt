@@ -40,8 +40,11 @@ fun BookItem(
 
                 }
                 Mode.FICTION -> {
-                    navController.navigate(route = Screen.FictionBookDetails.passMd5(
-                        book.md5.toString()
+                    val encodedLink =
+                        URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
+                    navController.navigate(route = Screen.FictionBookDetails.passMd5andLink(
+                        book.md5.toString(),
+                        encodedLink
                     ))
                 }
             }

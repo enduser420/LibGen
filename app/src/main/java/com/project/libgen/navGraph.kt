@@ -151,8 +151,11 @@ fun SetupNavGraph(
             arguments = listOf(
                 navArgument("md5") {
                     type = NavType.StringType
-                }
-            )
+                },
+                navArgument("downloadlink") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                })
         ) {
             FictionBookDetailsScreen(navController)
         }

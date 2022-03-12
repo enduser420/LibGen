@@ -15,9 +15,9 @@ sealed class Screen(val route: String) {
         }
     }
 
-    object FictionBookDetails : Screen("fiction_book_details/{$book_md5}") {
-        fun passMd5(md5: String): String {
-            return "fiction_book_details/$md5"
+    object FictionBookDetails : Screen("fiction_book_details/{$book_md5}/{$book_downloadlink}") {
+        fun passMd5andLink(md5: String, downloadlink: String): String {
+            return "fiction_book_details/$md5/$downloadlink"
         }
     }
 
