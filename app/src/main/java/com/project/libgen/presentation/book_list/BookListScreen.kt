@@ -103,15 +103,21 @@ private fun ScreenContent(
                     when (mode) {
                         Mode.NONFICTION -> {
                             TextButton(onClick = viewModel::toggleSection) {
-                                Text("Sci-tech")
+                                Text(
+                                    text = "Sci-Tech",
+                                    style = MaterialTheme.typography.h6
+                                )
                             }
                         }
                         Mode.FICTION -> {
                             TextButton(onClick = viewModel::toggleSection) {
-                                Text("Fiction")
+                                Text(
+                                    text = "Fiction",
+                                    style = MaterialTheme.typography.h6
+                                )
                             }
                         }
-                        else -> {}
+                        null -> {}
                     }
                 }
             )
