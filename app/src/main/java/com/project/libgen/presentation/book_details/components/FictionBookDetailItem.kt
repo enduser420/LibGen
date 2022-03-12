@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarBorder
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -21,18 +22,19 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.project.libgen.R
 import com.project.libgen.presentation.book_details.BookDetailsEvent
-import com.project.libgen.presentation.book_details.BookDetailsViewModel
+import com.project.libgen.presentation.book_details.fiction_book_details.FictionBookDetailsViewModel
 
 @Composable
-fun BookDetailItem(
-    viewModel: BookDetailsViewModel
+fun FictionBookDetailItem(
+    viewModel: FictionBookDetailsViewModel
 ) {
+    LaunchedEffect(key1 = viewModel.bookState, block = {
+        viewModel.getBookDetails()
+    })
     viewModel.bookState.value.book?.let { book ->
-        val bookmarked by remember {
-            viewModel.bookmarked
-        }
+        val bookmarked by remember { viewModel.bookmarked }
         val painter = rememberImagePainter(
-            data = "http://library.lol/covers/${book.coverurl}",
+            data = "https://libgen.rs${book.coverurl}",
             builder = {
                 placeholder(R.drawable.loading)
                 error(R.drawable.error)

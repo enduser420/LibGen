@@ -1,10 +1,9 @@
-package com.project.libgen.presentation.book_list
+package com.project.libgen.presentation.book_list.fiction_screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -31,12 +30,11 @@ import com.project.libgen.Screen
 import com.project.libgen.presentation.book_list.components.BookItem
 import com.project.libgen.presentation.book_list.components.FilterSection
 import com.project.libgen.presentation.components.ConfirmDialog
-import com.project.libgen.presentation.components.util.Mode
 import com.project.libgen.presentation.components.util.SnackbarController
 import com.project.libgen.presentation.components.util.UserState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
+/*
 @Composable
 fun BookListScreen(
     navController: NavController
@@ -47,10 +45,9 @@ fun BookListScreen(
 @Composable
 private fun ScreenContent(
     navController: NavController,
-    viewModel: BookListViewModel = hiltViewModel()
+    viewModel: Fiction_BookListViewModel = hiltViewModel()
 ) {
     val userState by viewModel.currentUser.observeAsState(UserState())
-    val mode by viewModel.modeState.observeAsState(Mode.NONFICTION)
     val state = viewModel.bookList.value
     val scaffoldState = rememberScaffoldState()
     val scrollState = rememberLazyListState()
@@ -97,21 +94,6 @@ private fun ScreenContent(
                         }
                     }) {
                         Icon(Icons.Filled.Menu, contentDescription = null)
-                    }
-                },
-                actions = {
-                    when (mode) {
-                        Mode.NONFICTION -> {
-                            TextButton(onClick = { viewModel.setFiction() }) {
-                                Text("Sci-tech")
-                            }
-                        }
-                        Mode.FICTION -> {
-                            TextButton(onClick = { viewModel.setNonFiction() }) {
-                                Text("Fiction")
-                            }
-                        }
-                        else -> {}
                     }
                 }
             )
@@ -165,7 +147,6 @@ private fun ScreenContent(
                     viewModel = viewModel
                 )
                 BookList(
-                    mode = mode,
                     scrollState = scrollState,
                     state = state,
                     navController = navController,
@@ -179,7 +160,7 @@ private fun ScreenContent(
 
 @Composable
 fun SearchBar(
-    viewModel: BookListViewModel
+    viewModel: Fiction_BookListViewModel
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -191,7 +172,7 @@ fun SearchBar(
                 .fillMaxWidth()
                 .padding(start = 10.dp, end = 5.dp, top = 10.dp, bottom = 2.dp)
                 .weight(1f),
-            value = viewModel.searchQuery.value,
+            value = "viewModel.searchQuery.value",
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Search,
@@ -221,7 +202,6 @@ fun SearchBar(
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun BookList(
-    mode: Mode,
     scrollState: LazyListState,
     state: BookListState,
     navController: NavController,
@@ -235,7 +215,7 @@ fun BookList(
         state = scrollState
     ) {
         items(state.bookList) { book ->
-            BookItem(mode, navController, book)
+            BookItem(navController, book)
         }
     }
     if (state.error.isNotBlank()) {
@@ -290,3 +270,4 @@ fun DrawerItem(
         }
     }
 }
+*/

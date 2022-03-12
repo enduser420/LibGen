@@ -3,10 +3,12 @@ package com.project.libgen.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.firebase.firestore.DocumentSnapshot
+import com.project.libgen.presentation.components.util.Mode
 
 @Entity
 data class Book(
-    @PrimaryKey val id: String,
+    @PrimaryKey val id: String = "",
     val author: String? = null,
     val title: String? = null,
     val pages: String? = null,
@@ -24,6 +26,7 @@ data class Book(
     val edition: String? = null,
     val language: String? = null,
     val filesize: String? = null,
+    var mode: Mode? = null,
     var userId: String? = null,
     var downloadlink: String? = null, // var because this needs to be changed in BookDetailsViewModel
     @ColumnInfo(name = "bookmarked") var bookmarked: Boolean = false // ^

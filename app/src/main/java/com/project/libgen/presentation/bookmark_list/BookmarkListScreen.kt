@@ -17,13 +17,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.project.libgen.Screen
 import com.project.libgen.presentation.book_list.components.BookItem
 import com.project.libgen.presentation.components.ConfirmDialog
 import com.project.libgen.presentation.components.util.SnackbarController
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @Composable
 fun BookmarkListScreen(
@@ -93,7 +90,9 @@ fun ScreenContent(
                     state = scrollState
                 ) {
                     items(state.bookmarkList) { bookmark ->
-                        BookItem(navController, bookmark)
+                        bookmark.mode?.let { mode ->
+                            BookItem(mode, navController, bookmark)
+                        }
                     }
                 }
                 if (state.error.isNotBlank()) {

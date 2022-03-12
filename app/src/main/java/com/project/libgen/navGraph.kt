@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.project.libgen.presentation.book_details.BookDetailsScreen
+import com.project.libgen.presentation.book_details.fiction_book_details.FictionBookDetailsScreen
 import com.project.libgen.presentation.book_list.BookListScreen
 import com.project.libgen.presentation.bookmark_details.BookmarkDetailsScreen
 import com.project.libgen.presentation.bookmark_list.BookmarkListScreen
@@ -132,6 +133,28 @@ fun SetupNavGraph(
             )
         ) {
             BookmarkDetailsScreen(navController)
+        }
+        composable(
+            route = Screen.FictionBookDetails.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { width },
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { width },
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(200))
+            },
+            arguments = listOf(
+                navArgument("md5") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            FictionBookDetailsScreen(navController)
         }
     }
 }

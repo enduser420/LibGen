@@ -13,11 +13,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.project.libgen.Screen
 import com.project.libgen.data.model.Book
+import com.project.libgen.presentation.components.util.Mode
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
 fun BookItem(
+    mode: Mode,
     navController: NavController,
     book: Book
 ) {
@@ -25,13 +27,24 @@ fun BookItem(
         modifier = Modifier
             .fillMaxWidth(),
         onClick = {
-            val encodedLink = URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
-            navController.navigate(
-                route = Screen.BookDetails.passIdandLink(
-                    book.id,
-                    encodedLink
-                )
-            )
+            when (mode) {
+                Mode.NONFICTION -> {
+            val encodedLink =
+                URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
+                    navController.navigate(
+                        route = Screen.BookDetails.passIdandLink(
+                            book.id,
+                            encodedLink
+                        )
+                    )
+
+                }
+                Mode.FICTION -> {
+                    navController.navigate(route = Screen.FictionBookDetails.passMd5(
+                        book.md5.toString()
+                    ))
+                }
+            }
         }) {
         Column(
             modifier = Modifier
@@ -44,12 +57,14 @@ fun BookItem(
                     .padding(bottom = 5.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = book.id,
-                    modifier = Modifier.padding(end = 5.dp),
-                    style = MaterialTheme.typography.body2,
-                    overflow = TextOverflow.Ellipsis
-                )
+                if (book.id.isNotEmpty()) {
+                    Text(
+                        text = book.id,
+                        modifier = Modifier.padding(end = 5.dp),
+                        style = MaterialTheme.typography.body2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 Text(
                     text = book.title ?: "N/A",
                     fontWeight = FontWeight.Bold,
@@ -64,7 +79,7 @@ fun BookItem(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "by ${book.author}",
+                    text = "by ${book.author ?: "N/A"}",
                     modifier = Modifier
                         .padding(start = 5.dp)
                         .weight(1f),
@@ -72,7 +87,9 @@ fun BookItem(
                     maxLines = 2
                 )
                 Row {
-                    Text(text = "Pages: ${book.pages}", modifier = Modifier.padding(end = 5.dp))
+                    if (book.pages?.isNotBlank() == true) {
+                        Text(text = "Pages: ${book.pages}", modifier = Modifier.padding(end = 5.dp))
+                    }
                     Text(text = book.extension ?: "N/A")
                 }
             }

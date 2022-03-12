@@ -1,23 +1,14 @@
 package com.project.libgen.presentation.bookmark_details
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.project.libgen.core.util.Resource
-import com.project.libgen.data.model.Book
 import com.project.libgen.presentation.book_details.BookDetailsState
 import com.project.libgen.repository.LibGenDownloadRepository
 import com.project.libgen.use_case.bookmark.BookmarkUseCases
-import com.project.libgen.use_case.get_book_details.GetBookDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +20,8 @@ class BookmarkDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _bookState = mutableStateOf(BookDetailsState())
-    val bookState: State<BookDetailsState> = _bookState
+    val bookState: State<BookDetailsState>
+        get() = _bookState
     private var currentBookmarkId: String? = null
     private val downloadlink = mutableStateOf("")
 
@@ -48,7 +40,7 @@ class BookmarkDetailsViewModel @Inject constructor(
     }
 
     fun onEvent(event: BookmarkDetailsEvent) {
-        when(event) {
+        when (event) {
             is BookmarkDetailsEvent.starBook -> {
                 viewModelScope.launch {
 //                    bookmarkUseCases.insertLocalBookmark(_bookState.value.book.apply { _bookState.value.book?.bookmarked = true })

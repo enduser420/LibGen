@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
+import com.project.libgen.presentation.components.util.Mode
 import com.project.libgen.presentation.components.util.UserState
 import com.project.libgen.use_case.get_book_list.GetBookListUseCase
+import com.project.libgen.use_case.get_book_list.GetFictionBookListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -19,10 +21,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BookListViewModel @Inject constructor(
-    private val getBookListUseCase: GetBookListUseCase
+    private val getBookListUseCase: GetBookListUseCase,
+    private val getFictionBookListUseCase: GetFictionBookListUseCase
 ) : ViewModel() {
 
-    private var _currentUser: MutableLiveData<UserState> = MutableLiveData(UserState(user = Firebase.auth.currentUser))
+    private var _currentUser: MutableLiveData<UserState> =
+        MutableLiveData(UserState(user = Firebase.auth.currentUser))
     val currentUser: LiveData<UserState>
         get() = _currentUser
 
@@ -45,11 +49,33 @@ class BookListViewModel @Inject constructor(
 
     val searched = mutableStateOf(false)
 
+    var modeState = MutableLiveData(Mode.NONFICTION)
+
     init {
         _searchQuery.value = "algorithm"
     }
 
+    fun setNonFiction() {
+        modeState.postValue(Mode.NONFICTION)
+    }
+
+    fun setFiction() {
+        modeState.postValue(Mode.FICTION)
+    }
+
     fun onSearch() {
+        when (modeState.value) {
+            Mode.NONFICTION -> {
+                onNonFictionSearch()
+            }
+            Mode.FICTION -> {
+                onFictionSearch()
+            }
+            else -> {}
+        }
+    }
+
+    private fun onNonFictionSearch() {
         getBookListUseCase(
             _searchQuery.value,
             filterOptions[filterIndex.value]
@@ -69,6 +95,27 @@ class BookListViewModel @Inject constructor(
                 }
             }
         }
+            .launchIn(CoroutineScope(IO)) // NOTE: Don't use .launchIn(viewModelScope), since this function is network related.
+    }
+
+    fun onFictionSearch() {
+        getFictionBookListUseCase(_searchQuery.value)
+            .onEach { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        searched.value = true
+                        _bookList.value = BookListState(bookList = result.data ?: emptyList())
+                    }
+                    is Resource.Error -> {
+                        _bookList.value = BookListState(
+                            error = result.message ?: "Something went wrong."
+                        )
+                    }
+                    is Resource.Loading -> {
+                        _bookList.value = BookListState(isLoading = true)
+                    }
+                }
+            }
             .launchIn(CoroutineScope(IO)) // NOTE: Don't use .launchIn(viewModelScope), since this function is network related.
     }
 

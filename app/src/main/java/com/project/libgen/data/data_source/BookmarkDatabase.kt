@@ -6,7 +6,7 @@ import com.project.libgen.data.model.Book
 
 @Database(
     entities = [Book::class],
-    version = 2
+    version = 3
 )
 
 abstract class BookmarkDatabase : RoomDatabase() {

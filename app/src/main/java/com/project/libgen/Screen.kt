@@ -2,6 +2,7 @@ package com.project.libgen
 
 private const val book_id = "id"
 private const val book_downloadlink = "downloadlink"
+private const val book_md5 = "md5"
 
 sealed class Screen(val route: String) {
     object SplashScreen : Screen("splash_screen")
@@ -11,6 +12,12 @@ sealed class Screen(val route: String) {
     object BookDetails : Screen("book_details/{$book_id}/{$book_downloadlink}") {
         fun passIdandLink(id: String, downloadlink: String): String {
             return "book_details/$id/$downloadlink"
+        }
+    }
+
+    object FictionBookDetails : Screen("fiction_book_details/{$book_md5}") {
+        fun passMd5(md5: String): String {
+            return "fiction_book_details/$md5"
         }
     }
 

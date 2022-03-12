@@ -31,15 +31,37 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
                     language = language ?: null,
                     extension = extension ?: null,
                     filesize = filesize ?: null,
-                    downloadlink = downloadlink ?: null,
-                    issn = null,
-                    series = null,
-                    coverurl = null,
-                    descr = null,
-                    volumeinfo = null,
-                    torrent = null,
-                    city = null,
-                    edition = null
+                    downloadlink = downloadlink ?: null
+                )
+            )
+        }
+        return bookList
+    }
+
+    override suspend fun getFictionBooks(query: String): List<Book> {
+        val bookList = mutableListOf<Book>()
+        val doc =
+            Jsoup.connect("https://libgen.rs/fiction/?q=$query&criteria=title&wildcard=0&language=&format=&page=1")
+                .get()
+        val rows = doc.select("table.catalog > tbody > tr")
+        rows.forEach { item ->
+            val author = item.child(0).text()
+            val series = item.child(1).text()
+            val title = item.child(2).text()
+            val md5 = item.child(2).select("a").attr("href").split("/").last()
+            val language = item.child(3).text()
+            val extension = item.child(4).text()
+            val downloadlink = item.child(5).select("td > ul > li:nth-child(1) > a").attr("href")
+            bookList.add(
+                Book(
+                    id = "",
+                    title = title,
+                    author = author,
+                    series = series,
+                    language = language,
+                    extension =extension,
+                    downloadlink = downloadlink,
+                    md5 = md5
                 )
             )
         }

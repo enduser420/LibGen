@@ -40,7 +40,6 @@ fun ScreenContent(
         if (currentUser.user == null) {
             navController.popBackStack()
             navController.navigate(Screen.UserLogin.route)
-            println("login")
         } else {
             navController.popBackStack()
             navController.navigate(Screen.BookList.route)

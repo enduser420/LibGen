@@ -35,7 +35,6 @@ class UserSignUpViewModel @Inject constructor(
     }
 
     fun signUp() {
-        println(displayNameState.text)
         SignUpUseCase(
             emailState.text.trim(),
             passwordState.text.trim()
