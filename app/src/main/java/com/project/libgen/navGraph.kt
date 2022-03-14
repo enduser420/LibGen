@@ -18,6 +18,7 @@ import com.project.libgen.presentation.book_list.BookListScreen
 import com.project.libgen.presentation.bookmark_list.BookmarkListScreen
 import com.project.libgen.presentation.splash_screen.SplashScreen
 import com.project.libgen.presentation.user_login.UserLoginScreen
+import com.project.libgen.presentation.user_settings.UserSettingsScreen
 import com.project.libgen.presentation.user_signup.UserSignUpScreen
 
 @Composable
@@ -164,6 +165,29 @@ fun SetupNavGraph(
             )
         ) {
             FictionBookDetailsScreen(navController)
+        }
+        composable(
+            route = Screen.UserSettingsScreen.route,
+            enterTransition = {
+                slideInHorizontally(
+                    initialOffsetX = { width },
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeIn(animationSpec = tween(200))
+            },
+            popExitTransition = {
+                slideOutHorizontally(
+                    targetOffsetX = { width },
+                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
+                ) + fadeOut(animationSpec = tween(200))
+            },
+            arguments = listOf(
+                navArgument("mode") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
+        ) {
+            UserSettingsScreen(navController)
         }
     }
 }
