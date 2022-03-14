@@ -128,7 +128,16 @@ class BookListViewModel @Inject constructor(
     }
 
     fun logout() {
-        _currentUser.postValue(UserState(user = null))
-        Firebase.auth.signOut()
+        Firebase.auth.currentUser?.let { user ->
+            if (user.isAnonymous) {
+                user.delete().addOnCompleteListener {
+                    if (it.isSuccessful)
+                        _currentUser.postValue(UserState(user = null))
+                }
+            } else {
+                _currentUser.postValue(UserState(user = null))
+                Firebase.auth.signOut()
+            }
+        }
     }
 }
