@@ -15,7 +15,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
-fun DisplayName(displayNameState: DisplayNameState) {
+fun DisplayName(displayNameState: DisplayNameState, label: String = "Display Name") {
     Column {
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -25,7 +25,7 @@ fun DisplayName(displayNameState: DisplayNameState) {
                 displayNameState.validate()
             },
             label = {
-                Text("Display Name")
+                Text(text = label)
             },
             isError = displayNameState.error != null
         )
@@ -34,7 +34,7 @@ fun DisplayName(displayNameState: DisplayNameState) {
 }
 
 @Composable
-fun Email(emailState: EmailState) {
+fun Email(emailState: EmailState, label: String = "Email") {
     Column {
         TextField(
             modifier = Modifier.fillMaxWidth(),
@@ -45,7 +45,7 @@ fun Email(emailState: EmailState) {
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             label = {
-                Text("Email")
+                Text(text = label)
             },
             isError = emailState.error != null
         )
@@ -54,7 +54,7 @@ fun Email(emailState: EmailState) {
 }
 
 @Composable
-fun Password(passwordState: PasswordState) {
+fun Password(passwordState: PasswordState, label: String = "Password") {
     var passwordVisibility by remember { mutableStateOf(false) }
     Column {
         TextField(
@@ -65,7 +65,7 @@ fun Password(passwordState: PasswordState) {
                 passwordState.validate()
             },
             label = {
-                Text("Password")
+                Text(text = label)
             },
             visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
