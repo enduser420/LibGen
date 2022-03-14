@@ -144,7 +144,24 @@ fun SetupNavGraph(
                 navArgument("downloadlink") {
                     type = NavType.StringType
                     defaultValue = ""
-                })
+                },
+                navArgument("language") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("series") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("extension") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                },
+                navArgument("filesize") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                }
+            )
         ) {
             FictionBookDetailsScreen(navController)
         }

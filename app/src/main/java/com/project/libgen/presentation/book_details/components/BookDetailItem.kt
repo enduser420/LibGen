@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter
 import com.project.libgen.R
@@ -39,89 +40,101 @@ fun BookDetailItem(
                 fallback(R.drawable.error)
             }
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painter,
-                contentDescription = null
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        RowItem(header = "Title:", content = book.title ?: "N/A", maxLines = 2, contentIcon = {
-            if (bookmarked == true) {
-                IconButton(onClick = {
-                    viewModel.onEvent(BookDetailsEvent.unstarBook)
-                }) {
-                    Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
-                }
-            } else {
-                IconButton(onClick = {
-                    viewModel.onEvent(BookDetailsEvent.starBook)
-                }) {
-                    Icon(Icons.Default.StarBorder, contentDescription = null)
-                }
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painter,
+                    contentDescription = null
+                )
             }
-        })
-        RowItem(header = "Author(s):", content = book.author ?: "N/A")
-        RowItem(
-            header = "Description:",
-            verticalAlignment = Alignment.Top,
-            content = book.descr ?: "N/A",
-            maxLines = 5,
-            contentStyle = MaterialTheme.typography.subtitle1
-        )
-        RowItem(header = "Year:", content = book.year ?: "N/A")
-        RowItem(header = "Volume:", content = book.volumeinfo ?: "N/A")
-        RowItem(header = "Series:", content = book.series ?: "N/A")
-        RowItem(header = "Edition:", content = book.edition ?: "N/A")
-        RowItem(header = "Publisher:", content = book.publisher ?: "N/A")
-        RowItem(header = "City:", content = book.city ?: "N/A")
-        RowItem(header = "Pages:", content = book.pages ?: "N/A")
-        RowItem(header = "Language:", content = book.language ?: "N/A")
-        RowItem(header = "ISBN(s):", content = book.issn ?: "N/A")
-        RowItem(header = "Torrent:", content = book.torrent ?: "N/A", setSpacer = false)
+            Spacer(modifier = Modifier.height(10.dp))
+            RowItem(
+                header = "Title:",
+                content = book.title,
+                contentIcon = {
+                    if (bookmarked == true) {
+                        IconButton(onClick = {
+                            viewModel.onEvent(BookDetailsEvent.unstarBook)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Filled.Star,
+                                tint = Color.Yellow,
+                                contentDescription = null
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            viewModel.onEvent(BookDetailsEvent.starBook)
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.StarBorder,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                })
+            RowItem(header = "Author(s):", content = book.author ?: "N/A")
+            RowItem(
+                header = "Description:",
+                content = book.descr ?: "N/A",
+                contentStyle = MaterialTheme.typography.subtitle1
+            )
+            RowItem(header = "Year:", content = book.year)
+            RowItem(header = "Volume:", content = book.volumeinfo)
+            RowItem(header = "Series:", content = book.series)
+            RowItem(header = "Edition:", content = book.edition)
+            RowItem(header = "Publisher:", content = book.publisher)
+            RowItem(header = "City:", content = book.city)
+            RowItem(header = "Pages:", content = book.pages)
+            RowItem(header = "Language:", content = book.language)
+            RowItem(header = "ISBN(s):", content = book.issn)
+            RowItem(header = "Torrent:", content = book.torrent, setSpacer = false)
+        }
     }
 }
 
 @Composable
 private fun RowItem(
-    modifier: Modifier = Modifier,
-    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     header: String,
-    content: String,
-    maxLines: Int = 2,
+    content: String?,
     contentStyle: TextStyle = MaterialTheme.typography.body1,
     contentIcon: @Composable () -> Unit = {},
     setSpacer: Boolean = true
 ) {
-    Column(
-        horizontalAlignment = Alignment.Start
-    ) {
+    Column {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            verticalAlignment = verticalAlignment,
-            horizontalArrangement = Arrangement.Start
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = header,
-                style = MaterialTheme.typography.h6,
-            )
-            Text(
-                modifier = modifier,
-                maxLines = maxLines,
-                text = content,
-                overflow = TextOverflow.Ellipsis,
-                style = contentStyle
+                style = MaterialTheme.typography.h5,
             )
             contentIcon()
         }
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = content.toString().ifBlank { "N/A" },
+            overflow = TextOverflow.Ellipsis,
+            style = contentStyle
+        )
         if (setSpacer) Spacer(modifier = Modifier.height(8.dp))
     }
+}
+
+@Preview
+@Composable
+fun Test() {
+    RowItem(header = "TEXT", content = "TEXTTTTTTT", contentIcon = {
+        Icon(Icons.Default.Star, contentDescription = null)
+    })
 }

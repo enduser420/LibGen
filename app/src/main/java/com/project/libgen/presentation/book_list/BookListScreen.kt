@@ -1,6 +1,7 @@
 package com.project.libgen.presentation.book_list
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -18,11 +19,18 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -104,16 +112,18 @@ private fun ScreenContent(
                         Mode.NONFICTION -> {
                             TextButton(onClick = viewModel::toggleSection) {
                                 Text(
-                                    text = "Sci-Tech",
-                                    style = MaterialTheme.typography.h6
+                                    text = "SCI-TECH",
+                                    style = MaterialTheme.typography.body1,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
                         }
                         Mode.FICTION -> {
                             TextButton(onClick = viewModel::toggleSection) {
                                 Text(
-                                    text = "Fiction",
-                                    style = MaterialTheme.typography.h6
+                                    text = "FICTION",
+                                    style = MaterialTheme.typography.body1,
+                                    fontWeight = FontWeight.Bold
                                 )
                             }
                         }
@@ -126,9 +136,12 @@ private fun ScreenContent(
             userState.user?.let {
                 Column(
                     modifier = Modifier.padding(vertical = 5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box(
-                        modifier = Modifier.height(150.dp),
+                        modifier = Modifier
+                            .height(150.dp)
+                            .fillMaxWidth(),
                         contentAlignment = Alignment.BottomStart
                     ) {
                         if (it.isAnonymous) {
@@ -139,7 +152,7 @@ private fun ScreenContent(
                             )
                         } else {
                             Text(
-                                text = it.uid,
+                                text = it.displayName ?: it.uid,
                                 style = MaterialTheme.typography.h6,
                                 fontWeight = FontWeight.Bold
                             )
@@ -162,6 +175,7 @@ private fun ScreenContent(
                 onClickAction = { showDialog = true }
             )
         },
+//        drawerShape = customShape(configuration),
         content = {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -294,5 +308,22 @@ fun DrawerItem(
             )
             Text(text = drawerText)
         }
+    }
+}
+
+fun customShape(configuration: Configuration) = object : Shape {
+    override fun createOutline(
+        size: Size,
+        layoutDirection: LayoutDirection,
+        density: Density
+    ): Outline {
+        return Outline.Rectangle(
+            Rect(
+                0f,
+                0f,
+                100f /* width */,
+                configuration.screenHeightDp.toFloat() /* height */
+            )
+        )
     }
 }

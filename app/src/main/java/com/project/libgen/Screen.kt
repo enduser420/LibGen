@@ -3,6 +3,11 @@ package com.project.libgen
 private const val book_id = "id"
 private const val book_downloadlink = "downloadlink"
 private const val book_md5 = "md5"
+private const val book_author = "author"
+private const val book_series = "series"
+private const val book_language = "language"
+private const val book_extension = "extension"
+private const val book_filesize = "filesize"
 
 sealed class Screen(val route: String) {
     object SplashScreen : Screen("splash_screen")
@@ -15,9 +20,23 @@ sealed class Screen(val route: String) {
         }
     }
 
-    object FictionBookDetails : Screen("fiction_book_details/{$book_md5}/{$book_downloadlink}") {
-        fun passMd5andLink(md5: String, downloadlink: String): String {
-            return "fiction_book_details/$md5/$downloadlink"
+//    object FictionBookDetails : Screen("fiction_book_details/{$book_md5}/{$book_downloadlink}") {
+//        fun passMd5andLink(md5: String, downloadlink: String): String {
+//            return "fiction_book_details/$md5/$downloadlink"
+//        }
+//    }
+
+    object FictionBookDetails :
+        Screen("fiction_book_details/{$book_md5}/{$book_downloadlink}/{$book_series}/{$book_language}/{$book_extension}/{$book_filesize}") {
+        fun passMd5andLinkandOthers(
+            md5: String,
+            downloadlink: String,
+            language: String,
+            series: String,
+            extension: String,
+            filesize: String
+        ): String {
+            return "fiction_book_details/$md5/$downloadlink/$series/$language/$extension/$filesize"
         }
     }
 

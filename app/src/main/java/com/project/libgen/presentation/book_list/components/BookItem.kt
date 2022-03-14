@@ -42,10 +42,16 @@ fun BookItem(
                 Mode.FICTION -> {
                     val encodedLink =
                         URLEncoder.encode(book.downloadlink, StandardCharsets.UTF_8.toString())
+                    val extension = book.extension!!.split("/").first().trim()
+                    val filesize = book.extension!!.split("/").last().trim()
                     navController.navigate(
-                        route = Screen.FictionBookDetails.passMd5andLink(
+                        route = Screen.FictionBookDetails.passMd5andLinkandOthers(
                             book.md5.toString(),
-                            encodedLink
+                            encodedLink,
+                            book.language ?: "NA",
+                            book.series ?: "NA",
+                            extension,
+                            filesize
                         )
                     )
                 }

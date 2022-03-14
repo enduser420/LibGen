@@ -1,6 +1,7 @@
 package com.project.libgen.presentation.book_details.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -34,96 +35,91 @@ fun FictionBookDetailItem(
     viewModel.bookState.value.book?.let { book ->
         val bookmarked by remember { viewModel.bookmarked }
         val painter = rememberImagePainter(
-            data = "https://libgen.rs${book.coverurl}",
+            data = book.coverurl,
             builder = {
                 placeholder(R.drawable.loading)
                 error(R.drawable.error)
                 fallback(R.drawable.error)
             }
         )
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painter,
-                contentDescription = null
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(300.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Image(
+                    modifier = Modifier.fillMaxSize(),
+                    painter = painter,
+                    contentDescription = null
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            RowItem(header = "Title:", content = book.title, contentIcon = {
+                if (bookmarked == true) {
+                    IconButton(onClick = {
+                        viewModel.onEvent(BookDetailsEvent.unstarBook)
+                    }) {
+                        Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
+                    }
+                } else {
+                    IconButton(onClick = {
+                        viewModel.onEvent(BookDetailsEvent.starBook)
+                    }) {
+                        Icon(Icons.Default.StarBorder, contentDescription = null)
+                    }
+                }
+            })
+            RowItem(header = "Author(s):", content = book.author)
+            RowItem(header = "Year:", content = book.year)
+            RowItem(header = "Series:", content = viewModel.series.value)
+            RowItem(header = "Language:", content = viewModel.language.value)
+            RowItem(header = "Extension:", content = viewModel.extension.value)
+            RowItem(header = "Filesize:", content = viewModel.filesize.value)
+            RowItem(
+                header = "Torrent:",
+                content = book.torrent?.split("/")?.last().toString(),
+                setSpacer = false,
+                onClick = {
+                    viewModel.onEvent(BookDetailsEvent.getTorrent)
+                },
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        RowItem(header = "Title:", content = book.title ?: "N/A", maxLines = 2, contentIcon = {
-            if (bookmarked == true) {
-                IconButton(onClick = {
-                    viewModel.onEvent(BookDetailsEvent.unstarBook)
-                }) {
-                    Icon(Icons.Filled.Star, tint = Color.Yellow, contentDescription = null)
-                }
-            } else {
-                IconButton(onClick = {
-                    viewModel.onEvent(BookDetailsEvent.starBook)
-                }) {
-                    Icon(Icons.Default.StarBorder, contentDescription = null)
-                }
-            }
-        })
-        RowItem(header = "Author(s):", content = book.author ?: "N/A")
-        RowItem(
-            header = "Description:",
-            verticalAlignment = Alignment.Top,
-            content = book.descr ?: "N/A",
-            maxLines = 5,
-            contentStyle = MaterialTheme.typography.subtitle1
-        )
-        RowItem(header = "Year:", content = book.year ?: "N/A")
-        RowItem(header = "Volume:", content = book.volumeinfo ?: "N/A")
-        RowItem(header = "Series:", content = book.series ?: "N/A")
-        RowItem(header = "Edition:", content = book.edition ?: "N/A")
-        RowItem(header = "Publisher:", content = book.publisher ?: "N/A")
-        RowItem(header = "City:", content = book.city ?: "N/A")
-        RowItem(header = "Pages:", content = book.pages ?: "N/A")
-        RowItem(header = "Language:", content = book.language ?: "N/A")
-        RowItem(header = "ISBN(s):", content = book.issn ?: "N/A")
-        RowItem(header = "Torrent:", content = book.torrent ?: "N/A", setSpacer = false)
     }
 }
 
 @Composable
 private fun RowItem(
-    modifier: Modifier = Modifier,
-    verticalAlignment: Alignment.Vertical = Alignment.CenterVertically,
     header: String,
-    content: String,
-    maxLines: Int = 2,
+    content: String?,
     contentStyle: TextStyle = MaterialTheme.typography.body1,
     contentIcon: @Composable () -> Unit = {},
-    setSpacer: Boolean = true
+    setSpacer: Boolean = true,
+    onClick: () -> Unit = {}
 ) {
-    Column(
-        horizontalAlignment = Alignment.Start
-    ) {
+    Column {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = verticalAlignment,
-            horizontalArrangement = Arrangement.Start
+                .padding(horizontal = 8.dp)
+                .clickable {
+                    onClick()
+                },
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = header,
-                style = MaterialTheme.typography.h6,
-            )
-            Text(
-                modifier = modifier,
-                maxLines = maxLines,
-                text = content,
-                overflow = TextOverflow.Ellipsis,
-                style = contentStyle
+                style = MaterialTheme.typography.h5,
             )
             contentIcon()
         }
+        Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            text = content.toString().ifBlank { "N/A" },
+            style = contentStyle
+        )
         if (setSpacer) Spacer(modifier = Modifier.height(8.dp))
     }
 }

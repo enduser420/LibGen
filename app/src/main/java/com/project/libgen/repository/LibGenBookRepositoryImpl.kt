@@ -18,7 +18,6 @@ class LibGenBookRepositoryImpl @Inject constructor(
         val doc = Jsoup
             .connect("https://libgen.rs/fiction/$md5")
             .get()
-        val id = doc.select("table.record > tbody > tr:nth-child(9) > td:nth-child(2)").text()
         val title =
             doc.select("table.record > tbody > tr:nth-child(1) > td.record_title").text()
         val author =
@@ -28,31 +27,21 @@ class LibGenBookRepositoryImpl @Inject constructor(
             doc.select("table.record > tbody > tr:nth-child(3) > td:nth-child(2)").text()
         val year =
             doc.select("table.record > tbody > tr:nth-child(4) > td:nth-child(2)").text()
-        val publisher =
-            doc.select("table.record > tbody > tr:nth-child(5) > td:nth-child(2)").text()
-        val isbn =
-            doc.select("table.record > tbody > tr:nth-child(6) > td:nth-child(2)").text()
-        val extension =
-            doc.select("table.record > tbody > tr:nth-child(7) > td:nth-child(2)").text()
-        val filesize =
-            doc.select("table.record > tbody > tr:nth-child(8) > td:nth-child(2)").text()
-        val md5 = doc.select("table.hashes > tbody >tr:nth-child(1) >td ").text()
+        val _md5 = doc.select("table.hashes > tbody >tr:nth-child(1) >td ").text()
         val coverurl = doc.select("div.record_side").select("img").attr("src")
+        val torrent = doc.select("ul.record_mirrors > li:last-child").select("a").attr("href")
         val downloadlink =
             doc.select("ul.record_mirrors > li:nth-child(1)").select("a").attr("href")
         return Book(
-            id = id,
+            id = "",
             title = title,
             author = author,
-            coverurl = coverurl,
-            extension = extension,
-            publisher = publisher,
+            coverurl = "https://libgen.rs$coverurl",
             year = year,
-            issn = isbn,
-            md5 = md5,
+            md5 = _md5,
             language = language,
-            filesize = filesize,
-            downloadlink = downloadlink
+            downloadlink = downloadlink,
+            torrent = torrent
         )
     }
 }

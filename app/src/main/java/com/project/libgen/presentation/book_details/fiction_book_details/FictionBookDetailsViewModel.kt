@@ -61,6 +61,21 @@ class FictionBookDetailsViewModel @Inject constructor(
         MutableLiveData(UserState(user = Firebase.auth.currentUser))
 
     private val _md5 = mutableStateOf("")
+    val md5
+        get() = _md5
+
+    private val _extension = mutableStateOf("")
+    val extension
+        get() = _extension
+    private val _filesize = mutableStateOf("")
+    val filesize
+        get() = _filesize
+    private val _language = mutableStateOf("")
+    val language
+        get() = _language
+    private val _series = mutableStateOf("")
+    val series
+        get() = _series
 
     private val downloadManager =
         application.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -73,6 +88,22 @@ class FictionBookDetailsViewModel @Inject constructor(
         savedStateHandle.get<String>("downloadlink")?.let { bookLink ->
             val decoded = URLDecoder.decode(bookLink, StandardCharsets.UTF_8.toString())
             _downloadlink.value = decoded
+        }
+
+        savedStateHandle.get<String>("series")?.let { series ->
+            _series.value = series
+        }
+
+        savedStateHandle.get<String>("language")?.let { language ->
+            _language.value = language
+        }
+
+        savedStateHandle.get<String>("extension")?.let { extension ->
+            _extension.value = extension
+        }
+
+        savedStateHandle.get<String>("filesize")?.let { filesize ->
+            _filesize.value = filesize
         }
     }
 
@@ -150,6 +181,10 @@ class FictionBookDetailsViewModel @Inject constructor(
                                     it.mode = Mode.FICTION
                                     it.bookmarked = true
                                     it.downloadlink = _downloadlink.value
+                                    it.series = _series.value
+                                    it.language = _language.value
+                                    it.extension = _extension.value
+                                    it.filesize = _filesize.value
                                 })
                             } else {
                                 bookmarkDao.addBook(it.apply {
@@ -157,6 +192,10 @@ class FictionBookDetailsViewModel @Inject constructor(
                                     it.bookmarked = true
                                     it.userId = user.uid
                                     it.downloadlink = _downloadlink.value
+                                    it.series = _series.value
+                                    it.language = _language.value
+                                    it.extension = _extension.value
+                                    it.filesize = _filesize.value
                                 })
                             }
                         }
@@ -184,7 +223,26 @@ class FictionBookDetailsViewModel @Inject constructor(
             is BookDetailsEvent.downloadBook -> {
                 downloadFile()
             }
-            else -> {}
+            BookDetailsEvent.getTorrent -> {
+                getTorrent()
+            }
+        }
+    }
+
+    private fun getTorrent() {
+        _bookState.value.book?.let {
+            val filename = it.torrent?.split("/")?.last()
+            CoroutineScope(IO).launch {
+                val request =
+                    DownloadManager.Request(Uri.parse("https://libgen.rs${it.torrent}"))
+                request.setTitle("Downloading torrent file")
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                request.setDestinationInExternalPublicDir(
+                    Environment.DIRECTORY_DOWNLOADS,
+                    filename
+                )
+                downloadManager.enqueue(request)
+            }
         }
     }
 }

@@ -57,9 +57,9 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
                     id = "",
                     title = title,
                     author = author,
-                    series = series,
-                    language = language,
-                    extension = extension,
+                    series = series.ifBlank { "NA" },
+                    language = language.ifBlank { "NA" },
+                    extension = extension.ifBlank { "NA" },
                     downloadlink = downloadlink,
                     md5 = md5
                 )
