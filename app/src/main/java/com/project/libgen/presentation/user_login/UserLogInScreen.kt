@@ -40,7 +40,6 @@ private fun ScreenContent(
     val state by viewModel.loginState.observeAsState(UserState())
     val scaffoldState = rememberScaffoldState()
     val snackbarController = SnackbarController(viewModel.viewModelScope)
-    val scope = rememberCoroutineScope()
     var showDialog by remember { mutableStateOf(false) }
     val signInIntent = viewModel.googleSignInClient.signInIntent
     val launcher = rememberLauncherForActivityResult(
@@ -66,20 +65,6 @@ private fun ScreenContent(
             navController.navigate(Screen.BookList.route)
         }
     })
-//    if (showDialog) {
-//        ConfirmDialog(
-//            title = "Logging in as Guest.",
-//            content = "Guest users bookmarks are lost on uninstall. Are you sure you want to continue as Guest?",
-//            onDismiss = { showDialog = false },
-//            onConfirm = {
-//                showDialog = false
-//                scope.launch {
-//                    scaffoldState.drawerState.close()
-//                }
-//                viewModel.anonLogIn()
-//            }
-//        )
-//    }
     if (showDialog) {
         AlertDialog(
             title = { Text("Logging in as Guest.") },
@@ -90,7 +75,7 @@ private fun ScreenContent(
                     showDialog = false
                     viewModel.anonLogIn()
                 }) {
-                    Text("Ok")
+                    Text("OK")
                 }
             })
     }
@@ -136,7 +121,7 @@ private fun ScreenContent(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Button(
                         onClick = { showDialog = true }

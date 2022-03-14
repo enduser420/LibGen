@@ -1,7 +1,7 @@
 package com.project.libgen.presentation.book_list
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -16,18 +16,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -36,6 +32,7 @@ import com.project.libgen.presentation.book_list.components.BookItem
 import com.project.libgen.presentation.book_list.components.FilterSection
 import com.project.libgen.presentation.components.ConfirmDialog
 import com.project.libgen.presentation.components.util.Mode
+import com.project.libgen.presentation.components.util.SettingMode
 import com.project.libgen.presentation.components.util.SnackbarController
 import com.project.libgen.presentation.components.util.UserState
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +107,8 @@ private fun ScreenContent(
                                 Text(
                                     text = "SCI-TECH",
                                     style = MaterialTheme.typography.body1,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colors.primary
                                 )
                             }
                         }
@@ -119,7 +117,8 @@ private fun ScreenContent(
                                 Text(
                                     text = "FICTION",
                                     style = MaterialTheme.typography.body1,
-                                    fontWeight = FontWeight.Bold
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colors.primary
                                 )
                             }
                         }
@@ -128,59 +127,110 @@ private fun ScreenContent(
                 }
             )
         },
+        drawerShape = MaterialTheme.shapes.small,
         drawerContent = {
             userState.user?.let {
-                Column(
-                    modifier = Modifier.padding(vertical = 5.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Box(
+                    modifier = Modifier
+                        .height(150.dp)
+                        .fillMaxWidth(),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .height(150.dp)
-                            .fillMaxWidth(),
-                        contentAlignment = Alignment.BottomStart
-                    ) {
-                        if (it.isAnonymous) {
+                    if (it.isAnonymous) {
+                        Text(
+                            modifier = Modifier
+                                .padding(horizontal = 8.dp, vertical = 8.dp),
+                            text = "GUEST",
+                            style = MaterialTheme.typography.h6,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    } else {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
                             Text(
-                                text = "Guest",
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp),
+                                text = it.displayName.toString().uppercase(),
                                 style = MaterialTheme.typography.h6,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
-                        } else {
                             Text(
-                                text = it.displayName ?: it.uid,
-                                style = MaterialTheme.typography.h6,
-                                fontWeight = FontWeight.Bold
+                                modifier = Modifier
+                                    .padding(horizontal = 8.dp),
+                                text = it.email.toString(),
+                                style = MaterialTheme.typography.body1,
+                                fontWeight = FontWeight.Normal,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
                     }
                 }
-            }
-            DrawerItem(
-                drawerIcon = Icons.Filled.LibraryBooks,
-                drawerText = "Bookmarks",
-                scope = scope,
-                scaffoldState = scaffoldState,
-                onClickAction = { navController.navigate(Screen.BookmarkList.route) }
-            )
-            if (!userState.user?.isAnonymous!!) {
                 DrawerItem(
-                    drawerIcon = Icons.Filled.Email,
-                    drawerText = "Change Email",
+                    drawerIcon = Icons.Filled.LibraryBooks,
+                    drawerText = "Bookmarks",
                     scope = scope,
                     scaffoldState = scaffoldState,
-                    onClickAction = { navController.navigate(Screen.UserSettingsScreen.route) }
+                    onClickAction = { navController.navigate(Screen.BookmarkList.route) }
+                )
+                if (!it.isAnonymous) {
+                    DrawerItem(
+                        drawerIcon = Icons.Filled.Email,
+                        drawerText = "Change Email.",
+                        scope = scope,
+                        scaffoldState = scaffoldState,
+                        onClickAction = {
+                            navController.navigate(
+                                route = Screen.UserSettingsScreen.passMode(
+                                    SettingMode.CHANGEEMAIL.name
+                                )
+                            )
+                        }
+                    )
+                    DrawerItem(
+                        drawerIcon = Icons.Filled.Contacts,
+                        drawerText = "Change Display Name.",
+                        scope = scope,
+                        scaffoldState = scaffoldState,
+                        onClickAction = {
+                            navController.navigate(
+                                route = Screen.UserSettingsScreen.passMode(
+                                    SettingMode.CHANGEDISPLAYNAME.name
+                                )
+                            )
+                        }
+                    )
+                    DrawerItem(
+                        drawerIcon = Icons.Filled.Password,
+                        drawerText = "Change Password.",
+                        scope = scope,
+                        scaffoldState = scaffoldState,
+                        onClickAction = {
+                            navController.navigate(
+                                route = Screen.UserSettingsScreen.passMode(
+                                    SettingMode.CHANGEPASSWORD.name
+                                )
+                            )
+                        }
+                    )
+                }
+                DrawerItem(
+                    drawerIcon = Icons.Filled.Logout,
+                    drawerText = "Sign Out",
+                    scope = scope,
+                    scaffoldState = scaffoldState,
+                    onClickAction = { showDialog = true }
                 )
             }
-            DrawerItem(
-                drawerIcon = Icons.Filled.Logout,
-                drawerText = "Sign Out",
-                scope = scope,
-                scaffoldState = scaffoldState,
-                onClickAction = { showDialog = true }
-            )
         },
-//        drawerShape = customShape(configuration),
         content = {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -293,42 +343,29 @@ fun DrawerItem(
     scaffoldState: ScaffoldState,
     onClickAction: () -> Unit
 ) {
-    TextButton(
-        modifier = Modifier.fillMaxWidth(),
-        onClick = {
-            onClickAction()
-            scope.launch {
-                scaffoldState.drawerState.close()
-            }
-        }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp)
+            .height(45.dp)
+            .clickable {
+                onClickAction()
+                scope.launch {
+                    scaffoldState.drawerState.close()
+                }
+            },
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            Modifier.padding(5.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                drawerIcon,
-                modifier = Modifier.padding(end = 5.dp),
-                contentDescription = null
-            )
-            Text(text = drawerText)
-        }
-    }
-}
-
-fun customShape(configuration: Configuration) = object : Shape {
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        return Outline.Rectangle(
-            Rect(
-                0f,
-                0f,
-                100f /* width */,
-                configuration.screenHeightDp.toFloat() /* height */
-            )
+        Icon(
+            drawerIcon,
+            modifier = Modifier.padding(end = 5.dp),
+            contentDescription = null,
+            tint = MaterialTheme.colors.primary
+        )
+        Text(
+            text = drawerText,
+            color = MaterialTheme.colors.primary,
+            fontSize = 16.sp
         )
     }
 }
