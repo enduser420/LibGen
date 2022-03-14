@@ -11,10 +11,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LibraryBooks
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -24,7 +21,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -159,12 +155,21 @@ private fun ScreenContent(
                         }
                     }
                 }
+            }
+            DrawerItem(
+                drawerIcon = Icons.Filled.LibraryBooks,
+                drawerText = "Bookmarks",
+                scope = scope,
+                scaffoldState = scaffoldState,
+                onClickAction = { navController.navigate(Screen.BookmarkList.route) }
+            )
+            if (!userState.user?.isAnonymous!!) {
                 DrawerItem(
-                    drawerIcon = Icons.Filled.LibraryBooks,
-                    drawerText = "Bookmarks",
+                    drawerIcon = Icons.Filled.Email,
+                    drawerText = "Change Email",
                     scope = scope,
                     scaffoldState = scaffoldState,
-                    onClickAction = { navController.navigate(Screen.BookmarkList.route) }
+                    onClickAction = { navController.navigate(Screen.UserSettingsScreen.route) }
                 )
             }
             DrawerItem(
