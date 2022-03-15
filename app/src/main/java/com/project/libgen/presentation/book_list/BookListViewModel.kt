@@ -43,6 +43,11 @@ class BookListViewModel @Inject constructor(
         listOf("title", "author", "series", "publisher", "year", "language", "tags", "extension")
     val filterIndex = mutableStateOf(0)
 
+    val fictionFilterText = listOf("Title", "Author(s)", "Series")
+    private val fictionFilterOptions =
+        listOf("title", "author", "series")
+    val fictionFilterIndex = mutableStateOf(0)
+
     fun onSearchQueryChanged(newSearchQuery: String) {
         _searchQuery.value = newSearchQuery
     }
@@ -107,7 +112,10 @@ class BookListViewModel @Inject constructor(
     }
 
     private fun onFictionSearch() {
-        getFictionBookListUseCase(_searchQuery.value)
+        getFictionBookListUseCase(
+            _searchQuery.value,
+            fictionFilterOptions[fictionFilterIndex.value]
+        )
             .onEach { result ->
                 when (result) {
                     is Resource.Success -> {

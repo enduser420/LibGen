@@ -10,10 +10,10 @@ import javax.inject.Inject
 class GetFictionBookListUseCase @Inject constructor(
     private val LibGenSearch: LibGenSearchRepository
 ) {
-    operator fun invoke(searchQuery: String) = channelFlow {
+    operator fun invoke(searchQuery: String, filter: String) = channelFlow {
         try {
             send(Resource.Loading())
-            val bookList = LibGenSearch.getFictionBooks(searchQuery)
+            val bookList = LibGenSearch.getFictionBooks(searchQuery, filter)
             send(Resource.Success(bookList))
         } catch (e: HttpException) {
             send(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))

@@ -12,10 +12,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.project.libgen.presentation.book_list.BookListViewModel
+import com.project.libgen.presentation.components.util.Mode
 
 @Composable
 fun FilterSection(
-    viewModel: BookListViewModel
+    viewModel: BookListViewModel,
+    mode: Mode
 ) {
     var filterShow by remember { mutableStateOf(false) }
 
@@ -26,19 +28,37 @@ fun FilterSection(
             onClick = { filterShow = true }) {
             Icon(Icons.Default.KeyboardArrowDown, contentDescription = null)
         }
-
         DropdownMenu(expanded = filterShow, onDismissRequest = { filterShow = !filterShow }) {
-            viewModel.filterText.forEachIndexed { index, text ->
-                DropdownMenuItem(
-                    onClick = {
-                        filterShow = false
-                        viewModel.filterIndex.value = index
-                    },
-                    modifier = Modifier.background(
-                        if (index == viewModel.filterIndex.value) Color.LightGray else Color.Transparent
-                    )
-                ) {
-                    Text(text)
+            when (mode) {
+                Mode.NONFICTION -> {
+                    viewModel.filterText.forEachIndexed { index, text ->
+                        DropdownMenuItem(
+                            onClick = {
+                                filterShow = false
+                                viewModel.filterIndex.value = index
+                            },
+                            modifier = Modifier.background(
+                                if (index == viewModel.filterIndex.value) Color.LightGray else Color.Transparent
+                            )
+                        ) {
+                            Text(text)
+                        }
+                    }
+                }
+                Mode.FICTION -> {
+                    viewModel.fictionFilterText.forEachIndexed { index, text ->
+                        DropdownMenuItem(
+                            onClick = {
+                                filterShow = false
+                                viewModel.fictionFilterIndex.value = index
+                            },
+                            modifier = Modifier.background(
+                                if (index == viewModel.fictionFilterIndex.value) Color.LightGray else Color.Transparent
+                            )
+                        ) {
+                            Text(text)
+                        }
+                    }
                 }
             }
         }

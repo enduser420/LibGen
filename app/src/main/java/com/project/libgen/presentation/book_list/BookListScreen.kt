@@ -237,7 +237,8 @@ private fun ScreenContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 SearchBar(
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    mode = mode
                 )
                 BookList(
                     mode = mode,
@@ -254,7 +255,8 @@ private fun ScreenContent(
 
 @Composable
 fun SearchBar(
-    viewModel: BookListViewModel
+    viewModel: BookListViewModel,
+    mode: Mode
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -289,7 +291,7 @@ fun SearchBar(
                 }
             }
         )
-        FilterSection(viewModel)
+        FilterSection(viewModel, mode)
     }
 }
 

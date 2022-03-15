@@ -38,10 +38,10 @@ class LibGenSearchRepositoryImpl : LibGenSearchRepository {
         return bookList
     }
 
-    override suspend fun getFictionBooks(query: String): List<Book> {
+    override suspend fun getFictionBooks(query: String, filter: String): List<Book> {
         val bookList = mutableListOf<Book>()
         val doc =
-            Jsoup.connect("https://libgen.rs/fiction/?q=$query&criteria=title&wildcard=0&language=&format=&page=1")
+            Jsoup.connect("https://libgen.rs/fiction/?q=$query&criteria=$filter&wildcard=0&language=&format=&page=1")
                 .get()
         val rows = doc.select("table.catalog > tbody > tr")
         rows.forEach { item ->
