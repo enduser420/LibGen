@@ -171,7 +171,7 @@ class BookDetailsViewModel @Inject constructor(
                     _currentUser.value?.user?.let { user ->
                         _bookState.value.book?.let {
                             if (user.isAnonymous) {
-                                bookmarkUseCases.insertBookmark(it.apply {
+                                bookmarkUseCases.insertLocalBookmark(it.apply {
                                     it.mode = Mode.NONFICTION
                                     it.bookmarked = true
                                     it.downloadlink = _downloadlink.value
@@ -194,7 +194,7 @@ class BookDetailsViewModel @Inject constructor(
                     Firebase.auth.currentUser?.let { user ->
                         _bookState.value.book?.let {
                             if (user.isAnonymous) {
-                                bookmarkUseCases.deleteBookmark(it)
+                                bookmarkUseCases.deleteLocalBookmark(it)
                             } else {
                                 bookmarkDao.deleteBook(
                                     userId = user.uid,

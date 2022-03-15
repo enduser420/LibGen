@@ -52,9 +52,9 @@ class BookmarkRepositoryModule {
         return BookmarkUseCases(
             getLocalBookmarks = GetLocalBookmarks(localBookmarkRepository),
             getBookmarks = GetBookmarks(bookmarkRepository),
-            deleteBookmark = DeleteBookmark(localBookmarkRepository),
-            insertBookmark = InsertBookmark(localBookmarkRepository),
-            getBookmark = GetBookmark(localBookmarkRepository),
+            deleteLocalBookmark = DeleteLocalBookmark(localBookmarkRepository),
+            insertLocalBookmark = InsertLocalBookmark(localBookmarkRepository),
+            getLocalBookmark = GetLocalBookmark(localBookmarkRepository),
             getLocalBookmarkBool = GetLocalBookmarkBool(localBookmarkRepository),
             getBookmarkBool = GetBookmarkBool(bookmarkRepository),
             deleteAllLocalBookmarks = DeleteAllLocalBookmarks(localBookmarkRepository),

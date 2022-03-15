@@ -7,7 +7,7 @@ import com.project.libgen.presentation.components.util.Mode
 
 @Entity
 data class Book(
-    @PrimaryKey val id: String = "",
+    @PrimaryKey var id: String = "",
     val author: String? = null,
     val title: String? = null,
     val pages: String? = null,

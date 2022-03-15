@@ -68,7 +68,7 @@ fun BookItem(
                     .padding(bottom = 5.dp),
                 verticalAlignment = Alignment.Top
             ) {
-                if (book.id.isNotEmpty()) {
+                if (!book.id.contains(Regex("[a-zA-z]"))) {
                     Text(
                         text = book.id,
                         modifier = Modifier.padding(end = 5.dp),

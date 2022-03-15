@@ -29,7 +29,7 @@ import com.project.libgen.presentation.book_details.fiction_book_details.Fiction
 fun FictionBookDetailItem(
     viewModel: FictionBookDetailsViewModel
 ) {
-    LaunchedEffect(key1 = viewModel.bookState, block = {
+    LaunchedEffect(key1 = true, block = {
         viewModel.getBookDetails()
     })
     viewModel.bookState.value.book?.let { book ->
