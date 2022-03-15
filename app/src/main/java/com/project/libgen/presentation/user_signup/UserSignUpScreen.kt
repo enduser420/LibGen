@@ -69,8 +69,9 @@ fun ScreenContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
+                    .padding(20.dp)
+                    .padding(top = 150.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 DisplayName(viewModel.displayNameState)

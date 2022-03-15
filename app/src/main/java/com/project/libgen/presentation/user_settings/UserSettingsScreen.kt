@@ -79,8 +79,9 @@ private fun ScreenContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(20.dp),
-                verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.CenterVertically),
+                    .padding(20.dp)
+                    .padding(top = 150.dp),
+                verticalArrangement = Arrangement.spacedBy(5.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (SettingMode.valueOf(mode)) {
@@ -89,10 +90,11 @@ private fun ScreenContent(
                         Password(viewModel.passwordState)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Button(
+                                modifier = Modifier.padding(end = 10.dp),
                                 onClick = {
                                     viewModel.newPasswordState.clear()
                                     viewModel.passwordState.clear()
@@ -113,10 +115,11 @@ private fun ScreenContent(
                         Password(viewModel.passwordState)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Button(
+                                modifier = Modifier.padding(end = 10.dp),
                                 onClick = {
                                     viewModel.emailState.clear()
                                     viewModel.passwordState.clear()
@@ -137,10 +140,11 @@ private fun ScreenContent(
                         Password(viewModel.passwordState)
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Button(
+                                modifier = Modifier.padding(end = 10.dp),
                                 onClick = {
                                     viewModel.displayNameState.clear()
                                     viewModel.passwordState.clear()
