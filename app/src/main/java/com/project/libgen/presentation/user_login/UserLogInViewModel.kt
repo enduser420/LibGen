@@ -44,8 +44,8 @@ class UserLogInViewModel @Inject constructor(
         get() = _loginState
 
     init {
-        emailState.text = "helloworld@gmail.com"
-        passwordState.text = "helloworld@123"
+//        emailState.text = "helloworld@gmail.com"
+//        passwordState.text = "helloworld@123"
         Firebase.auth.currentUser?.let {
             _loginState.postValue(UserState(user = it))
         }

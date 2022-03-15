@@ -56,9 +56,9 @@ class BookListViewModel @Inject constructor(
 
     var modeState = MutableLiveData(Mode.NONFICTION)
 
-    init {
-        _searchQuery.value = "algorithm"
-    }
+//    init {
+//        _searchQuery.value = "algorithm"
+//    }
 
     fun toggleSection() {
         when (modeState.value) {

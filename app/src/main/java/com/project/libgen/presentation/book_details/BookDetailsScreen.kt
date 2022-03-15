@@ -112,7 +112,7 @@ private fun ScreenContent(
             FloatingActionButton(onClick = {
                 viewModel.onEvent(BookDetailsEvent.downloadBook)
             }) {
-                Icon(Icons.Filled.Download, contentDescription = null)
+                Icon(Icons.Filled.Download,tint = MaterialTheme.colors.primary, contentDescription = null)
             }
         },
         content = {
