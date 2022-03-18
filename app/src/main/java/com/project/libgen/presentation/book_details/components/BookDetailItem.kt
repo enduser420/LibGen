@@ -1,6 +1,7 @@
 package com.project.libgen.presentation.book_details.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -94,7 +95,11 @@ fun BookDetailItem(
             RowItem(header = "Pages:", content = book.pages)
             RowItem(header = "Language:", content = book.language)
             RowItem(header = "ISBN(s):", content = book.issn)
-            RowItem(header = "Torrent:", content = book.torrent, setSpacer = false)
+            RowItem(
+                header = "Torrent:",
+                content = book.torrent,
+                setSpacer = false,
+                onClick = { viewModel.onEvent(BookDetailsEvent.getTorrent) })
         }
     }
 }
@@ -105,7 +110,8 @@ private fun RowItem(
     content: String?,
     contentStyle: TextStyle = MaterialTheme.typography.body1,
     contentIcon: @Composable () -> Unit = {},
-    setSpacer: Boolean = true
+    setSpacer: Boolean = true,
+    onClick: () -> Unit = {}
 ) {
     Column {
         Row(
@@ -122,7 +128,11 @@ private fun RowItem(
             contentIcon()
         }
         Text(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier
+                .padding(horizontal = 16.dp)
+                .clickable {
+                    onClick()
+                },
             text = content.toString().ifBlank { "N/A" },
             overflow = TextOverflow.Ellipsis,
             style = contentStyle

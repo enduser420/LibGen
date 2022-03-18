@@ -124,9 +124,9 @@ class BookDetailsViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         result.data?.let {
-                            val uri = Uri.parse(it[0])
+                            val uri = Uri.parse(it[1])
                             val request = DownloadManager.Request(uri)
-                            request.setTitle("LibGen: ${book.title}")
+                            request.setTitle(book.title)
                             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                             request.setDestinationInExternalPublicDir(
                                 Environment.DIRECTORY_DOCUMENTS,
@@ -153,7 +153,7 @@ class BookDetailsViewModel @Inject constructor(
             CoroutineScope(IO).launch {
                 val request =
                     DownloadManager.Request(Uri.parse("https://libgen.rs/book/index.php?md5=${it.md5}&oftorrent="))
-                request.setTitle("Downloading torrent file")
+                request.setTitle(it.md5)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 request.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,

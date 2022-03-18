@@ -138,7 +138,7 @@ class FictionBookDetailsViewModel @Inject constructor(
 
     private fun downloadFile() {
         _bookState.value.book?.let { book ->
-            val fileName = "${book.title}.${book.extension}"
+            val fileName = "${book.title}.${_extension.value}"
 
             LibGenBookDownloadUseCase(_downloadlink.value).onEach { result ->
                 when (result) {
@@ -147,9 +147,9 @@ class FictionBookDetailsViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         result.data?.let {
-                            val uri = Uri.parse(it[0])
+                            val uri = Uri.parse(it[1])
                             val request = DownloadManager.Request(uri)
-                            request.setTitle("LibGen: ${book.title}")
+                            request.setTitle(book.title)
                             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                             request.setDestinationInExternalPublicDir(
                                 Environment.DIRECTORY_DOCUMENTS,
@@ -237,7 +237,7 @@ class FictionBookDetailsViewModel @Inject constructor(
             CoroutineScope(IO).launch {
                 val request =
                     DownloadManager.Request(Uri.parse("https://libgen.rs${it.torrent}"))
-                request.setTitle("Downloading torrent file")
+                request.setTitle(it.torrent)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 request.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
