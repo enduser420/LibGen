@@ -9,7 +9,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,7 +20,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.project.libgen.R
 import com.project.libgen.Screen
-import com.project.libgen.presentation.components.util.UserState
 
 @Composable
 fun SplashScreen(
@@ -35,16 +33,6 @@ fun ScreenContent(
     navController: NavController,
     viewModel: SplashViewModel = hiltViewModel()
 ) {
-    val currentUser by viewModel.currentUser.observeAsState(UserState())
-    LaunchedEffect(key1 = currentUser, block = {
-        if (currentUser.user == null) {
-            navController.popBackStack()
-            navController.navigate(Screen.UserLogin.route)
-        } else {
-            navController.popBackStack()
-            navController.navigate(Screen.BookList.route)
-        }
-    })
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

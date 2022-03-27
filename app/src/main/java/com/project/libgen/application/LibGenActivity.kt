@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                 navController = rememberAnimatedNavController()
                 SetupNavGraph(
                     navController = navController,
-                    startDestination = Screen.SplashScreen.route,
+                    startDestination = Screen.BookList.route,
                     width = configuration.screenWidthDp / 2
                 )
             }

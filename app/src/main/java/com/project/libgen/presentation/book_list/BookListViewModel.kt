@@ -9,7 +9,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.project.libgen.core.util.Resource
 import com.project.libgen.presentation.components.util.Mode
-import com.project.libgen.presentation.components.util.UserState
 import com.project.libgen.use_case.get_book_list.GetBookListUseCase
 import com.project.libgen.use_case.get_book_list.GetFictionBookListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,10 +24,7 @@ class BookListViewModel @Inject constructor(
     private val getFictionBookListUseCase: GetFictionBookListUseCase
 ) : ViewModel() {
 
-    private var _currentUser: MutableLiveData<UserState> =
-        MutableLiveData(UserState(user = Firebase.auth.currentUser))
-    val currentUser: LiveData<UserState>
-        get() = _currentUser
+
 
     private var _searchQuery = mutableStateOf("")
     val searchQuery = _searchQuery
@@ -133,19 +129,5 @@ class BookListViewModel @Inject constructor(
                 }
             }
             .launchIn(CoroutineScope(IO)) // NOTE: Don't use .launchIn(viewModelScope), since this function is network related.
-    }
-
-    fun logout() {
-        Firebase.auth.currentUser?.let { user ->
-            if (user.isAnonymous) {
-                user.delete().addOnCompleteListener {
-                    if (it.isSuccessful)
-                        _currentUser.postValue(UserState(user = null))
-                }
-            } else {
-                _currentUser.postValue(UserState(user = null))
-                Firebase.auth.signOut()
-            }
-        }
     }
 }

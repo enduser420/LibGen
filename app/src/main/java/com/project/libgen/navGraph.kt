@@ -17,9 +17,6 @@ import com.project.libgen.presentation.book_details.fiction_book_details.Fiction
 import com.project.libgen.presentation.book_list.BookListScreen
 import com.project.libgen.presentation.bookmark_list.BookmarkListScreen
 import com.project.libgen.presentation.splash_screen.SplashScreen
-import com.project.libgen.presentation.user_login.UserLoginScreen
-import com.project.libgen.presentation.user_settings.UserSettingsScreen
-import com.project.libgen.presentation.user_signup.UserSignUpScreen
 
 @Composable
 fun SetupNavGraph(
@@ -30,40 +27,6 @@ fun SetupNavGraph(
     AnimatedNavHost(navController = navController, startDestination = startDestination) {
         composable(route = Screen.SplashScreen.route) {
             SplashScreen(navController)
-        }
-        composable(
-            route = Screen.UserLogin.route,
-            exitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { -width },
-                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                ) + fadeOut(animationSpec = tween(200))
-            },
-            popEnterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { -width },
-                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(200))
-            }
-        ) {
-            UserLoginScreen(navController)
-        }
-        composable(
-            route = Screen.UserSignUp.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { width },
-                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { width },
-                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                ) + fadeOut(animationSpec = tween(200))
-            }
-        ) {
-            UserSignUpScreen(navController)
         }
         composable(
             route = Screen.BookList.route,
@@ -165,29 +128,6 @@ fun SetupNavGraph(
             )
         ) {
             FictionBookDetailsScreen(navController)
-        }
-        composable(
-            route = Screen.UserSettingsScreen.route,
-            enterTransition = {
-                slideInHorizontally(
-                    initialOffsetX = { width },
-                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                ) + fadeIn(animationSpec = tween(200))
-            },
-            popExitTransition = {
-                slideOutHorizontally(
-                    targetOffsetX = { width },
-                    animationSpec = tween(durationMillis = 200, easing = FastOutSlowInEasing)
-                ) + fadeOut(animationSpec = tween(200))
-            },
-            arguments = listOf(
-                navArgument("mode") {
-                    type = NavType.StringType
-                    defaultValue = ""
-                }
-            )
-        ) {
-            UserSettingsScreen(navController)
         }
     }
 }

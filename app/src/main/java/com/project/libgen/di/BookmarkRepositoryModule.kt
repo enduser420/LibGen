@@ -3,10 +3,7 @@ package com.project.libgen.di
 import android.app.Application
 import androidx.room.Room
 import com.google.firebase.firestore.FirebaseFirestore
-import com.project.libgen.data.data_source.BookmarkDao
 import com.project.libgen.data.data_source.BookmarkDatabase
-import com.project.libgen.repository.BookmarkRepository
-import com.project.libgen.repository.BookmarkRepositoryImpl
 import com.project.libgen.repository.LocalBookmarkRepository
 import com.project.libgen.repository.LocalBookmarkRepositoryImpl
 import com.project.libgen.use_case.bookmark.*
@@ -39,26 +36,16 @@ class BookmarkRepositoryModule {
 
     @Provides
     @Singleton
-    fun provideBookmarkRepository(bookmarkDao: BookmarkDao): BookmarkRepository {
-        return BookmarkRepositoryImpl(bookmarkDao)
-    }
-
-    @Provides
-    @Singleton
     fun provideBookmarkUseCases(
-        bookmarkRepository: BookmarkRepository,
         localBookmarkRepository: LocalBookmarkRepository
     ): BookmarkUseCases {
         return BookmarkUseCases(
             getLocalBookmarks = GetLocalBookmarks(localBookmarkRepository),
-            getBookmarks = GetBookmarks(bookmarkRepository),
             deleteLocalBookmark = DeleteLocalBookmark(localBookmarkRepository),
             insertLocalBookmark = InsertLocalBookmark(localBookmarkRepository),
             getLocalBookmark = GetLocalBookmark(localBookmarkRepository),
             getLocalBookmarkBool = GetLocalBookmarkBool(localBookmarkRepository),
-            getBookmarkBool = GetBookmarkBool(bookmarkRepository),
-            deleteAllLocalBookmarks = DeleteAllLocalBookmarks(localBookmarkRepository),
-            deleteAllBookmarks = DeleteAllBookmarks(bookmarkRepository)
+            deleteAllLocalBookmarks = DeleteAllLocalBookmarks(localBookmarkRepository)
         )
     }
 

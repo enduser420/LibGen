@@ -12,8 +12,6 @@ private const val mode = "mode"
 
 sealed class Screen(val route: String) {
     object SplashScreen : Screen("splash_screen")
-    object UserLogin : Screen("user_login")
-    object UserSignUp : Screen("user_signup")
     object BookList : Screen("book_list")
     object BookDetails : Screen("book_details/{$book_id}/{$book_downloadlink}") {
         fun passIdandLink(id: String, downloadlink: String): String {
